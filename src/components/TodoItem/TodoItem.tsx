@@ -1,5 +1,6 @@
 import { AiOutlineEdit } from "react-icons/ai";
 import styled, { useTheme } from "styled-components";
+import { TodoItemProps } from "./TodoItemProps";
 
 const StyledTodoContainer = styled.div`
   display: flex;
@@ -16,13 +17,15 @@ const StyledTodoContainer = styled.div`
     cursor: pointer;
   }
 
-  &:hover .heading7 {
-    color: ${({ theme }) => theme.primary_1};
-    transition: 0.4s;
-  }
-
   &:hover .edit-icon {
     opacity: 1;
+    transition: 0.4s;
+  }
+`;
+
+const StyledHeading = styled.h6`
+  &:hover {
+    color: ${({ theme }) => theme.primary_1};
     transition: 0.4s;
   }
 `;
@@ -30,7 +33,6 @@ const StyledTodoContainer = styled.div`
 const StyledTodoHeader = styled.div`
   display: flex;
   width: 100%;
-  justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
 `;
@@ -51,14 +53,20 @@ const StyledMutedText = styled.p`
   color: ${({ theme }) => theme.text_muted};
 `;
 
-export default function TodoItem() {
+export default function TodoItem({ onClick, onClickIcon }: TodoItemProps) {
   const theme = useTheme();
   return (
     <StyledTodoContainer draggable>
       <StyledTodoInnerContainer>
         <StyledTodoHeader>
-          <h6 className="heading7">Update Database Web</h6>
-          <StyledIcon className="edit-icon" color={theme.muted} />
+          <StyledHeading className="heading7" onClick={onClick}>
+            Update Database Web
+          </StyledHeading>
+          <StyledIcon
+            className="edit-icon"
+            color={theme.text_muted}
+            onClick={onClickIcon}
+          />
         </StyledTodoHeader>
         <StyledMutedText className="muted body4">
           Update database dan Unit Testing untuk web Pemda

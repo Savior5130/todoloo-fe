@@ -20,11 +20,13 @@ const StyledButton = styled.button`
 `;
 
 const StyledLink = styled.span`
+  color: ${({ theme }) => theme.primary_1};
   &:hover {
     color: "#4275DF";
+    cursor: pointer;
   }
   &:focus {
-    background-color: "#2757BB";
+    color: "#2757BB";
   }
 `;
 
@@ -36,6 +38,6 @@ export default function Button({
   return variant == "primary" ? (
     <StyledButton className="heading8" onClick={handleOnClick} {...props} />
   ) : (
-    <StyledLink className="body2" onClick={handleOnClick} {...props} />
+    <StyledLink className="heading8" onClick={handleOnClick} {...props} />
   );
 }

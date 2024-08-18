@@ -6,6 +6,11 @@ export type Todo = {
   status: TodoStatus;
 };
 
+export type User = {
+  id: string;
+  username: string;
+};
+
 export type TypographyVariant =
   | "Display 1"
   | "Display 2"

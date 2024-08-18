@@ -1,7 +1,16 @@
+:root {
+  --muted: #8A8C9B;
+  --primary: #2E66DC;
+  --text-default: #252744;
+  --background_1: #FFFFFF;
+  --background_2: #F0F2F4;
+  --background_3: #F8F9FA;
+  --background_4: #D4D8DB;
+  font-family: 'SF Pro Display', Inter, Roboto;
+}
+
 #root {
-  color: #252744;
-  font-family: "SF Pro Display";
-  box-sizing: border-box;
+  color: var(--text-default);
   display: flex;
   flex-direction: column;
   width: 100vw;
@@ -9,8 +18,16 @@
   pointer-events: all;
 }
 
+hr {
+  border: 0;
+  width: -webkit-fill-available;
+  height: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
 .muted {
-  color: "#8A8C9B";
+  color: #8A8C9B;
 }
 
 .display1 {
@@ -188,9 +205,30 @@
 }
 
 .muted {
-  color: "#8A8C9B" !important;
+  color: var(--muted) !important;
 }
 
 .primary {
-  color: "#2E66DC";
+  color: var(--primary);
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: .4rem;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--background_1); 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 1rem;
+  background: var(--primary); 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary)
 }

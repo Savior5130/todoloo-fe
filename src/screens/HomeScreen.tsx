@@ -1,9 +1,11 @@
+import { useMemo, useState } from "react";
 import styled from "styled-components";
-
 import Navbar from "../components/Navbar/Navbar";
 import TodoItem from "../components/TodoItem/TodoItem";
 import Button from "../components/Button/Button";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import Sidebar from "../components/Sidebar/Sidebar";
+import { SidebarVariant } from "../components/Sidebar/SidebarProps";
 
 const StyledContainer = styled.div`
   background-color: ${({ theme }) => theme.background_2};
@@ -60,9 +62,44 @@ const StyledEllipse3 = styled(StyledEllipse)`
 `;
 
 export default function HomeScreen() {
+  const [sidebar, setSidebar] = useState(false);
+  const [variant, setVariant] = useState<SidebarVariant>("read");
+
+  const handleOpenSidebar = () => setSidebar(true);
+  const handleCloseSidebar = () => setSidebar(false);
+  const handleChangeVariant = (variant: SidebarVariant) => setVariant(variant);
+
+  const handleClickAddTask = () => {
+    setVariant(() => "create");
+    handleOpenSidebar();
+  };
+
+  const handleClickTodo = () => {
+    setVariant(() => "read");
+    handleOpenSidebar();
+  };
+
+  const handleClickTodoIcon = () => {
+    setVariant(() => "edit");
+    handleOpenSidebar();
+  };
+
+  const handleRenderSidebar = useMemo(
+    () =>
+      sidebar && (
+        <Sidebar
+          variant={variant}
+          onClose={handleCloseSidebar}
+          onChangeVariant={handleChangeVariant}
+        />
+      ),
+    [sidebar, variant]
+  );
+
   return (
     <>
       <Navbar />
+      {handleRenderSidebar}
       <StyledContainer>
         <StyledCardContainer>
           <StyledStatusContainer>
@@ -70,9 +107,15 @@ export default function HomeScreen() {
             <h6 className="heading7">To Do (1)</h6>
           </StyledStatusContainer>
           <StyledInnerContainer>
-            <TodoItem />
-            <TodoItem />
-            <Button variant="primary">
+            <TodoItem
+              onClick={handleClickTodo}
+              onClickIcon={handleClickTodoIcon}
+            />
+            <TodoItem
+              onClick={handleClickTodo}
+              onClickIcon={handleClickTodoIcon}
+            />
+            <Button variant="primary" onClick={handleClickAddTask}>
               <AiOutlinePlusCircle size={"1rem"} />
               New Task
             </Button>
@@ -84,7 +127,10 @@ export default function HomeScreen() {
             <h6 className="heading7">On Progress (1)</h6>
           </StyledStatusContainer>
           <StyledInnerContainer>
-            <TodoItem />
+            <TodoItem
+              onClick={handleClickTodo}
+              onClickIcon={handleClickTodoIcon}
+            />
           </StyledInnerContainer>
         </StyledCardContainer>
         <StyledCardContainer>
@@ -92,9 +138,7 @@ export default function HomeScreen() {
             <StyledEllipse3 />
             <h6 className="heading7">Done (1)</h6>
           </StyledStatusContainer>
-          <StyledInnerContainer>
-            <TodoItem />
-          </StyledInnerContainer>
+          <StyledInnerContainer></StyledInnerContainer>
         </StyledCardContainer>
       </StyledContainer>
     </>
