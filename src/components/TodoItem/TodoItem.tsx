@@ -53,14 +53,20 @@ const StyledMutedText = styled.p`
   color: ${({ theme }) => theme.text_muted};
 `;
 
-export default function TodoItem({ onClick, onClickIcon }: TodoItemProps) {
+export default function TodoItem({
+  assignee,
+  title,
+  description,
+  onClick,
+  onClickIcon,
+}: TodoItemProps) {
   const theme = useTheme();
   return (
     <StyledTodoContainer draggable>
       <StyledTodoInnerContainer>
         <StyledTodoHeader>
           <StyledHeading className="heading7" onClick={onClick}>
-            Update Database Web
+            {title}
           </StyledHeading>
           <StyledIcon
             className="edit-icon"
@@ -68,11 +74,11 @@ export default function TodoItem({ onClick, onClickIcon }: TodoItemProps) {
             onClick={onClickIcon}
           />
         </StyledTodoHeader>
-        <StyledMutedText className="muted body4">
-          Update database dan Unit Testing untuk web Pemda
-        </StyledMutedText>
+        <StyledMutedText className="muted body4">{description}</StyledMutedText>
       </StyledTodoInnerContainer>
-      <StyledMutedText className="label4">Assigned to Mahdy</StyledMutedText>
+      {assignee && (
+        <StyledMutedText className="label4">Assigned to Mahdy</StyledMutedText>
+      )}
     </StyledTodoContainer>
   );
 }

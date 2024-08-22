@@ -1,5 +1,5 @@
 import styled, { useTheme } from "styled-components";
-import { CommentData, SidebarProps } from "./SidebarProps";
+import { SidebarProps } from "./SidebarProps";
 import SidebarCommentSection from "./SidebarCommentSection";
 import SidebarForm from "./SidebarForm";
 import { AiOutlineClose, AiOutlineEdit } from "react-icons/ai";
@@ -46,23 +46,12 @@ const StyledEditIcon = styled(AiOutlineEdit)`
 
 export default function Sidebar({
   onClose,
-  variant,
+  onCreate,
   onChangeVariant,
+  todo,
+  variant,
 }: SidebarProps) {
   const theme = useTheme();
-
-  const data: CommentData[] = [
-    {
-      author: "Mahdy",
-      message:
-        "Hi, do you need help? I figured you might be in trouble since it took you so long",
-      time: "15:23",
-    },
-    { author: "Mahdy", message: "Hi, Respon pls?", time: "15:23" },
-    { author: "Mahdy", message: "Ping", time: "15:23" },
-    { author: "Mahdy", message: "Hi, do you need help?", time: "15:23" },
-    // { author: "Mahdy", message: "Darling", time: "15:23" },
-  ];
 
   if (variant == "read")
     return (
@@ -71,7 +60,7 @@ export default function Sidebar({
         <StyledHeaderContainer>
           <p className="label1">Assigned to</p>
           <StyledTitleContainer>
-            <h6 className="heading6">Update database web</h6>{" "}
+            <h6 className="heading6">{todo?.title}</h6>{" "}
             <StyledEditIcon
               size={"1.25rem"}
               className="edit-icon"
@@ -79,11 +68,9 @@ export default function Sidebar({
               color={theme.text_muted}
             />
           </StyledTitleContainer>
-          <p className="body2">
-            Update databse dan Unit Testing untuk web Pemda
-          </p>
+          <p className="body2">{todo?.description}</p>
         </StyledHeaderContainer>
-        <SidebarCommentSection data={data} />
+        {todo && <SidebarCommentSection todo={todo} />}
       </StyledSidebar>
     );
   else if (variant == "create")
@@ -93,7 +80,12 @@ export default function Sidebar({
         <StyledHeaderContainer>
           <h6 className="heading6">Create Task</h6>
         </StyledHeaderContainer>
-        <SidebarForm variant="create" />
+        <SidebarForm
+          defaultValue={todo}
+          variant="create"
+          toggleSidebar={onClose}
+          onCreate={onCreate}
+        />
       </StyledSidebar>
     );
   else
@@ -105,7 +97,13 @@ export default function Sidebar({
             <h6 className="heading6">Edit Task</h6>
           </StyledTitleContainer>
         </StyledHeaderContainer>
-        <SidebarForm onClickCancel={onChangeVariant} variant="edit" />
+        <SidebarForm
+          defaultValue={todo}
+          onClickCancel={onChangeVariant}
+          variant="edit"
+          toggleSidebar={onClose}
+          onCreate={onCreate}
+        />
       </StyledSidebar>
     );
 }

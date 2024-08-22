@@ -1,11 +1,14 @@
-import { useMemo, useState } from "react";
-import styled from "styled-components";
-import Navbar from "../components/Navbar/Navbar";
-import TodoItem from "../components/TodoItem/TodoItem";
-import Button from "../components/Button/Button";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import Sidebar from "../components/Sidebar/Sidebar";
-import { SidebarVariant } from "../components/Sidebar/SidebarProps";
+import styled from "styled-components";
+import Navbar, {
+  Button,
+  Sidebar,
+  SidebarVariant,
+  TodoItem,
+} from "../components";
+import { Todo, TodoStatus } from "../types";
+import { AxiosInstance } from "../api";
 
 const StyledContainer = styled.div`
   background-color: ${({ theme }) => theme.background_2};
@@ -64,6 +67,8 @@ const StyledEllipse3 = styled(StyledEllipse)`
 export default function HomeScreen() {
   const [sidebar, setSidebar] = useState(false);
   const [variant, setVariant] = useState<SidebarVariant>("read");
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [selectedTodo, setSelectedTodo] = useState<Todo | undefined>(undefined);
 
   const handleOpenSidebar = () => setSidebar(true);
   const handleCloseSidebar = () => setSidebar(false);
@@ -74,14 +79,26 @@ export default function HomeScreen() {
     handleOpenSidebar();
   };
 
-  const handleClickTodo = () => {
-    setVariant(() => "read");
-    handleOpenSidebar();
-  };
+  const handleClickTodo = useCallback(
+    (todo: Todo) => {
+      setSelectedTodo(() => todo);
+      setVariant(() => "read");
+      handleOpenSidebar();
+    },
+    [setSelectedTodo]
+  );
 
-  const handleClickTodoIcon = () => {
-    setVariant(() => "edit");
-    handleOpenSidebar();
+  const handleClickTodoIcon = useCallback(
+    (todo: Todo) => {
+      setSelectedTodo(() => todo);
+      setVariant(() => "edit");
+      handleOpenSidebar();
+    },
+    [setSelectedTodo]
+  );
+
+  const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTodos(todos.filter((todo) => todo.title.startsWith(e.target.value)));
   };
 
   const handleRenderSidebar = useMemo(
@@ -89,16 +106,47 @@ export default function HomeScreen() {
       sidebar && (
         <Sidebar
           variant={variant}
+          todo={selectedTodo}
           onClose={handleCloseSidebar}
           onChangeVariant={handleChangeVariant}
+          onCreate={setTodos}
         />
       ),
-    [sidebar, variant]
+    [selectedTodo, sidebar, variant]
   );
+
+  const handleRenderItem = useCallback(
+    (todoStatus: TodoStatus) =>
+      todos
+        .filter((todo) => todo.status === todoStatus)
+        .map((todo) => {
+          return (
+            <TodoItem
+              key={todo.id}
+              assignee={todo.assignee}
+              title={todo.title}
+              description={todo.description}
+              onClick={() => handleClickTodo(todo)}
+              onClickIcon={() => handleClickTodoIcon(todo)}
+            />
+          );
+        }),
+    [handleClickTodo, handleClickTodoIcon, todos]
+  );
+
+  const fetchData = async () => {
+    await AxiosInstance.request({ url: "/todos", method: "GET" }).then(
+      ({ data }) => setTodos(data)
+    );
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>
-      <Navbar />
+      <Navbar onSearch={handleChangeSearch} />
       {handleRenderSidebar}
       <StyledContainer>
         <StyledCardContainer>
@@ -107,14 +155,7 @@ export default function HomeScreen() {
             <h6 className="heading7">To Do (1)</h6>
           </StyledStatusContainer>
           <StyledInnerContainer>
-            <TodoItem
-              onClick={handleClickTodo}
-              onClickIcon={handleClickTodoIcon}
-            />
-            <TodoItem
-              onClick={handleClickTodo}
-              onClickIcon={handleClickTodoIcon}
-            />
+            {handleRenderItem("TODO")}
             <Button variant="primary" onClick={handleClickAddTask}>
               <AiOutlinePlusCircle size={"1rem"} />
               New Task
@@ -124,13 +165,10 @@ export default function HomeScreen() {
         <StyledCardContainer>
           <StyledStatusContainer>
             <StyledEllipse2 />
-            <h6 className="heading7">On Progress (1)</h6>
+            <h6 className="heading7">In Progress (1)</h6>
           </StyledStatusContainer>
           <StyledInnerContainer>
-            <TodoItem
-              onClick={handleClickTodo}
-              onClickIcon={handleClickTodoIcon}
-            />
+            {handleRenderItem("IN_PROGRESS")}
           </StyledInnerContainer>
         </StyledCardContainer>
         <StyledCardContainer>
@@ -138,7 +176,9 @@ export default function HomeScreen() {
             <StyledEllipse3 />
             <h6 className="heading7">Done (1)</h6>
           </StyledStatusContainer>
-          <StyledInnerContainer></StyledInnerContainer>
+          <StyledInnerContainer>
+            {handleRenderItem("DONE")}
+          </StyledInnerContainer>
         </StyledCardContainer>
       </StyledContainer>
     </>

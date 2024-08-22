@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import Input from "../Input/Input";
+import { NavbarProps } from "./NavbarProps";
+import { useAuth } from "../../hooks";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -26,13 +28,14 @@ const StyledHeading = styled.h5`
   color: ${({ theme }) => theme.primary_1};
 `;
 
-export default function Navbar() {
+export default function Navbar({ onSearch }: NavbarProps) {
+  const { user } = useAuth();
   return (
     <StyledContainer>
       <StyledHeading className="heading5">ToDoloo</StyledHeading>
-      <Input type="text" placeholder="Search task" />
+      <Input type="text" placeholder="Search task" onChange={onSearch} />
       <StyledProfileContainer>
-        <h6 className="heading8">Nama</h6>
+        <h6 className="heading8">{user?.name}</h6>
         <StyledAvatar />
       </StyledProfileContainer>
     </StyledContainer>

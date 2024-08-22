@@ -1,8 +1,10 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { CommentDataProps } from "./SidebarProps";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
+import { AxiosInstance } from "../../api";
+import { Comment } from "../../types";
 
 const StyledContainer = styled.div`
   display: grid;
@@ -39,20 +41,31 @@ const StyledTimeContainer = styled.div`
   text-align: right;
 `;
 
-export default function SidebarCommentSection({ data }: CommentDataProps) {
+export default function SidebarCommentSection({ todo }: CommentDataProps) {
+  const [comments, setComments] = useState<Comment[]>([]);
+
   const handleRenderCommentItem = useMemo(
     () =>
-      data?.map((item) => (
+      comments.map((item) => (
         <StyledCommentItem>
-          <h6 className="heading8">{item.author}</h6>
+          <h6 className="heading8">{item.creator.name}</h6>
           <p className="body3 ">{item.message}</p>
           <StyledTimeContainer>
-            <p className="label3 muted">{item.time}</p>
+            <p className="label3 muted">{item.datetime}</p>
           </StyledTimeContainer>
         </StyledCommentItem>
       )),
-    [data]
+    [comments]
   );
+
+  useEffect(() => {
+    const fetchData = () =>
+      AxiosInstance.get("/comments", { params: { todoId: todo.id } }).then(
+        ({ data }) => setComments(data)
+      );
+
+    fetchData();
+  }, [todo.id]);
 
   return (
     <StyledContainer>

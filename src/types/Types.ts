@@ -1,15 +1,45 @@
-export type TodoStatus = "COMPLETE" | "INCOMPLETE" | "OVERDUE";
+export type TodoStatus = "TODO" | "IN_PROGRESS" | "DONE";
 
 export type Todo = {
+  id: number;
   title: string;
   description: string;
+  creator: User;
+  assignee?: User;
   status: TodoStatus;
 };
+
+export type Comment = {
+  id: number;
+  datetime: string;
+  message: string;
+  todo: Todo;
+  creator: User;
+};
+
+export type UserRole = "admin" | "user";
 
 export type User = {
   id: string;
   username: string;
+  name: string;
+  role: UserRole;
 };
+
+export type LoginMethod = "local" | "oauth";
+
+export interface loginBody {
+  type: LoginMethod;
+  username: string;
+  password: string;
+}
+
+export interface AuthContextType {
+  isAuthenticated: boolean;
+  user?: User;
+  login: (body: loginBody) => void;
+  logout: () => void;
+}
 
 export type TypographyVariant =
   | "Display 1"
