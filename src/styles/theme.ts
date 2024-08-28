@@ -7,6 +7,7 @@ export interface ThemeProps {
   text_muted: string;
   primary_1: string;
   primary_2: string;
+  primary_3: string;
   danger_1: string;
   danger_2: string;
   success_1: string;
@@ -23,6 +24,7 @@ export const lightTheme: ThemeProps = {
   text_muted: "#8A8C9B",
   primary_1: "#2E66DC",
   primary_2: "#ABC2F1",
+  primary_3: "#EEF3FC",
   danger_1: "#DC2E2E",
   danger_2: "#F1ABAB",
   success_1: "#2EDCA5",

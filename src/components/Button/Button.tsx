@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { ButtonProps } from "./ButtonProps";
 
-const StyledButton = styled.button`
+const StyledPrimaryButton = styled.button`
   background-color: ${({ theme }) => theme.primary_1};
   color: ${({ theme }) => theme.background_1};
   padding: 0.75rem 1.25rem;
@@ -12,14 +12,50 @@ const StyledButton = styled.button`
   border-radius: 1rem;
   border: none;
 
-  &:hover {
-    background-color: "#4275DF";
+  &:hover:enabled {
+    box-shadow: 0px 0.5rem 1rem 0px rgba(80, 136, 255, 0.39);
   }
+  &:focus {
+    background-color: "#2757BB";
+    outline: none;
+  }
+  &:disabled {
+    background-color: ${({ theme }) => theme.background_4};
+    cursor: auto;
+  }
+`;
+
+const StyledSecondaryButton = styled(StyledPrimaryButton)`
+  background-color: ${({ theme }) => theme.primary_3};
+  color: ${({ theme }) => theme.primary_1};
+
+  &:hover:enabled {
+    box-shadow: 0px 0.25rem 0.75rem 0px rgba(179, 192, 219, 0.39);
+  }
+
   &:focus {
     background-color: "#2757BB";
   }
   &:disabled {
     background-color: ${({ theme }) => theme.background_4};
+  }
+`;
+
+const StyledGhostButton = styled(StyledPrimaryButton)`
+  background-color: transparent;
+  color: ${({ theme }) => theme.primary_1};
+
+  &:hover:enabled {
+    color: ${({ theme }) => theme.primary_2};
+    box-shadow: none;
+  }
+
+  &:focus {
+    color: "#2757BB";
+    outline: none;
+  }
+  &:disabled {
+    color: ${({ theme }) => theme.background_4};
   }
 `;
 
@@ -42,9 +78,36 @@ export default function Button({
   handleOnClick,
   ...props
 }: ButtonProps) {
-  return variant == "primary" ? (
-    <StyledButton className="heading8" onClick={handleOnClick} {...props} />
-  ) : (
-    <StyledLink className="heading8" onClick={handleOnClick} {...props} />
-  );
+  switch (variant) {
+    case "primary":
+      return (
+        <StyledPrimaryButton
+          className="heading8"
+          onClick={handleOnClick}
+          {...props}
+        />
+      );
+    case "secondary":
+      return (
+        <StyledSecondaryButton
+          className="heading8"
+          onClick={handleOnClick}
+          {...props}
+        />
+      );
+    case "ghost":
+      return (
+        <StyledGhostButton
+          className="heading8"
+          onClick={handleOnClick}
+          {...props}
+        />
+      );
+    case "link":
+      return (
+        <StyledLink className="heading8" onClick={handleOnClick} {...props} />
+      );
+    default:
+      break;
+  }
 }

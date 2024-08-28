@@ -8,6 +8,8 @@ export const fetchLocalTimefromISO = (date: string) => {
   const minutes = utc_date.getTime();
   const offset = utc_date.getTimezoneOffset();
 
-  const local_time = minutes - offset;
-  return new Date(local_time).toString();
+  const local_minutes = minutes - offset;
+  const local_time = new Date(local_minutes).toLocaleTimeString("en-GB");
+  const local_time_substr = local_time.split(":");
+  return `${local_time_substr[0]}:${local_time_substr[1]}`;
 };

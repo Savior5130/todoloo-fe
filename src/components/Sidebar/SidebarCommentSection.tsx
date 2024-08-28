@@ -5,8 +5,13 @@ import Input from "../Input/Input";
 import Button from "../Button/Button";
 import { AxiosInstance } from "../../api";
 import { Comment } from "../../types";
-import { fetchPathParam } from "../../utils";
+import { fetchLocalTimefromISO, fetchPathParam } from "../../utils";
 import { AiOutlineSend } from "react-icons/ai";
+import { useAuth } from "../../hooks";
+
+interface StyledCommentItemProps {
+  selfAuthored: boolean;
+}
 
 const StyledContainer = styled.div`
   display: flex;
@@ -24,8 +29,10 @@ const StyledCommentContainer = styled.div`
   flex-direction: column;
 `;
 
-const StyledCommentItem = styled.div`
-  display: flex;
+const StyledCommentItem = styled.div<StyledCommentItemProps>`
+  display: block;
+  margin-left: ${({ selfAuthored }) => (selfAuthored ? "auto" : "unset")};
+  text-align: ${({ selfAuthored }) => (selfAuthored ? "right" : "left")};
   width: fit-content;
   flex-direction: column;
   margin-bottom: 0.5rem;
@@ -34,6 +41,10 @@ const StyledCommentItem = styled.div`
   padding-bottom: 0.5rem;
   background-color: ${({ theme }) => theme.background_3};
   max-width: 20rem;
+
+  &:hover {
+    cursor: default;
+  }
 `;
 
 const StyledInputContainer = styled.div`
@@ -50,21 +61,24 @@ const StyledTimeContainer = styled.div`
 export default function SidebarCommentSection({ todo }: CommentDataProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [message, setMessage] = useState("");
+  const { user } = useAuth();
 
   const handleRenderCommentItem = useMemo(
     () =>
       comments.map((item) => {
         return (
-          <StyledCommentItem>
+          <StyledCommentItem selfAuthored={user?.name === item.creator.name}>
             <h6 className="heading8">{item.creator.name}</h6>
             <p className="body3 ">{item.message}</p>
             <StyledTimeContainer>
-              <p className="label3 muted">{item.datetime}</p>
+              <p className="label3 muted">
+                {fetchLocalTimefromISO(item.datetime)}
+              </p>
             </StyledTimeContainer>
           </StyledCommentItem>
         );
       }),
-    [comments]
+    [comments, user?.name]
   );
 
   const handleSendComment = () => {
@@ -104,7 +118,7 @@ export default function SidebarCommentSection({ todo }: CommentDataProps) {
           onChange={(e) => setMessage(e.target.value)}
         />
         <Button onClick={handleSendComment} disabled={message === ""}>
-          <AiOutlineSend />
+          <AiOutlineSend size={16} />
           Send
         </Button>
       </StyledInputContainer>

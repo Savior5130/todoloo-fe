@@ -63,7 +63,7 @@ export default function Sidebar({
             <p className="label1">Assigned to</p>
           ) : (
             <Button variant="link">
-              <AiOutlinePlus />
+              <AiOutlinePlus size={16} />
               Assign Task
             </Button>
           )}

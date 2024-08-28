@@ -157,7 +157,7 @@ export default function HomeScreen() {
           <StyledInnerContainer>
             {handleRenderItem("TODO")}
             <Button variant="primary" onClick={handleClickAddTask}>
-              <AiOutlinePlusCircle size={"1rem"} />
+              <AiOutlinePlusCircle size={16} />
               New Task
             </Button>
           </StyledInnerContainer>

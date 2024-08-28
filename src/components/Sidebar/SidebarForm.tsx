@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import styled from "styled-components";
 import { SidebarFormProps } from "./SidebarProps";
@@ -12,6 +12,12 @@ const StyledContainer = styled.div`
   flex-direction: column;
   gap: 1.5rem;
   padding: 0 0.75rem;
+`;
+
+const StyledButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 `;
 
 export default function SidebarForm({
@@ -30,6 +36,12 @@ export default function SidebarForm({
       onCreate((todos) => [...todos, data]);
     });
   };
+
+  const handleSaveChangesDisabled = useMemo(() => {
+    return (
+      title === defaultValue!.title && description === defaultValue!.description
+    );
+  }, [defaultValue, description, title]);
 
   const handleEditTodo = () => {
     if (defaultValue)
@@ -72,7 +84,7 @@ export default function SidebarForm({
         onChange={(e) => setDescription(e.target.value)}
       />
       <Button onClick={handleOnlickCreate}>
-        <AiOutlinePlusCircle />
+        <AiOutlinePlusCircle size={16} />
         Add Task
       </Button>
     </StyledContainer>
@@ -88,10 +100,20 @@ export default function SidebarForm({
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-      <Button onClick={handleOnClickSave}>Save Changes</Button>
-      <Button onClick={() => onClickCancel && onClickCancel("read")}>
-        Cancel
-      </Button>
+      <StyledButtonContainer>
+        <Button
+          onClick={handleOnClickSave}
+          disabled={handleSaveChangesDisabled}
+        >
+          Save Changes
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={() => onClickCancel && onClickCancel("read")}
+        >
+          Cancel
+        </Button>
+      </StyledButtonContainer>
     </StyledContainer>
   );
 }
