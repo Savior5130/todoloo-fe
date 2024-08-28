@@ -5,17 +5,23 @@ import Input from "../Input/Input";
 import Button from "../Button/Button";
 import { AxiosInstance } from "../../api";
 import { Comment } from "../../types";
+import { fetchPathParam } from "../../utils";
+import { AiOutlineSend } from "react-icons/ai";
 
 const StyledContainer = styled.div`
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1 auto;
+  min-height: 0;
   padding: 1rem 0.75rem;
   grid-row-gap: 0.75rem;
 `;
 
 const StyledCommentContainer = styled.div`
-  display: block;
-  overflow: hidden;
+  display: flex;
+  overflow-y: auto;
+  flex: 1;
+  flex-direction: column;
 `;
 
 const StyledCommentItem = styled.div`
@@ -43,37 +49,64 @@ const StyledTimeContainer = styled.div`
 
 export default function SidebarCommentSection({ todo }: CommentDataProps) {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [message, setMessage] = useState("");
 
   const handleRenderCommentItem = useMemo(
     () =>
-      comments.map((item) => (
-        <StyledCommentItem>
-          <h6 className="heading8">{item.creator.name}</h6>
-          <p className="body3 ">{item.message}</p>
-          <StyledTimeContainer>
-            <p className="label3 muted">{item.datetime}</p>
-          </StyledTimeContainer>
-        </StyledCommentItem>
-      )),
+      comments.map((item) => {
+        return (
+          <StyledCommentItem>
+            <h6 className="heading8">{item.creator.name}</h6>
+            <p className="body3 ">{item.message}</p>
+            <StyledTimeContainer>
+              <p className="label3 muted">{item.datetime}</p>
+            </StyledTimeContainer>
+          </StyledCommentItem>
+        );
+      }),
     [comments]
   );
 
+  const handleSendComment = () => {
+    AxiosInstance.request({
+      url: "/comments",
+      method: "post",
+      data: {
+        message,
+        todo_id: todo.id,
+      },
+    }).then(() => {
+      setMessage("");
+    });
+  };
+
   useEffect(() => {
-    const fetchData = () =>
-      AxiosInstance.get("/comments", { params: { todoId: todo.id } }).then(
-        ({ data }) => setComments(data)
-      );
+    async function fetchData() {
+      await AxiosInstance.request({
+        url: fetchPathParam("/comments", todo.id),
+        method: "get",
+      }).then(({ data }) => setComments(data));
+    }
 
     fetchData();
-  }, [todo.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <StyledContainer>
       <h6 className="heading8">Comment</h6>
       <StyledCommentContainer>{handleRenderCommentItem}</StyledCommentContainer>
       <StyledInputContainer>
-        <Input style={{ flex: "1" }} placeholder="Message here" />
-        <Button>Send</Button>
+        <Input
+          style={{ flex: "1" }}
+          value={message}
+          placeholder="Message here"
+          onChange={(e) => setMessage(e.target.value)}
+        />
+        <Button onClick={handleSendComment} disabled={message === ""}>
+          <AiOutlineSend />
+          Send
+        </Button>
       </StyledInputContainer>
     </StyledContainer>
   );

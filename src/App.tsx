@@ -28,7 +28,7 @@ const App = () => {
           setIsAuthenticated(true),
           localStorage.setItem("access_token", data.access_token),
           AxiosInstance.get("/users", { params: { username } }).then(
-            ({ data }) => setUser(data)
+            ({ data }) => setUser(() => data[0])
           ),
           window.location.replace("/home")
         )

@@ -10,6 +10,7 @@ const StyledButton = styled.button`
   align-items: center;
   justify-content: center;
   border-radius: 1rem;
+  border: none;
 
   &:hover {
     background-color: "#4275DF";
@@ -17,16 +18,22 @@ const StyledButton = styled.button`
   &:focus {
     background-color: "#2757BB";
   }
+  &:disabled {
+    background-color: ${({ theme }) => theme.background_4};
+  }
 `;
 
 const StyledLink = styled.span`
   color: ${({ theme }) => theme.primary_1};
-  &:hover {
-    color: "#4275DF";
-    cursor: pointer;
+  width: fit-content;
+
+  & > :first-child {
+    margin-right: 0.5rem;
   }
-  &:focus {
-    color: "#2757BB";
+
+  &:hover {
+    color: ${({ theme }) => theme.primary_2};
+    cursor: pointer;
   }
 `;
 

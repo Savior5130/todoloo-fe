@@ -1,10 +1,11 @@
-import styled from "styled-components";
-import Button from "../Button/Button";
-import Input from "../Input/Input";
-import { SidebarFormProps } from "./SidebarProps";
-import Textarea from "../Textarea/Textarea";
-import { AxiosInstance } from "../../api";
 import { useState } from "react";
+import { AiOutlinePlusCircle } from "react-icons/ai";
+import styled from "styled-components";
+import { SidebarFormProps } from "./SidebarProps";
+import Textarea from "../Textarea";
+import Input from "../Input";
+import Button from "../Button";
+import { AxiosInstance } from "../../api";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -70,7 +71,10 @@ export default function SidebarForm({
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-      <Button onClick={handleOnlickCreate}>Add Task</Button>
+      <Button onClick={handleOnlickCreate}>
+        <AiOutlinePlusCircle />
+        Add Task
+      </Button>
     </StyledContainer>
   ) : (
     <StyledContainer>

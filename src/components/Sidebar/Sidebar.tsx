@@ -2,7 +2,8 @@ import styled, { useTheme } from "styled-components";
 import { SidebarProps } from "./SidebarProps";
 import SidebarCommentSection from "./SidebarCommentSection";
 import SidebarForm from "./SidebarForm";
-import { AiOutlineClose, AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
+import Button from "../Button";
 
 const StyledSidebar = styled.div`
   padding: 0.5rem;
@@ -13,7 +14,7 @@ const StyledSidebar = styled.div`
   grid-template-rows: auto 1fr;
   width: 30rem;
   box-sizing: border-box;
-  min-height: 100vh;
+  height: 100vh;
   gap: 2.5rem;
   position: fixed;
   right: 0;
@@ -58,7 +59,14 @@ export default function Sidebar({
       <StyledSidebar>
         <StyledCloseIcon onClick={onClose} />
         <StyledHeaderContainer>
-          <p className="label1">Assigned to</p>
+          {todo && todo.assignee ? (
+            <p className="label1">Assigned to</p>
+          ) : (
+            <Button variant="link">
+              <AiOutlinePlus />
+              Assign Task
+            </Button>
+          )}
           <StyledTitleContainer>
             <h6 className="heading6">{todo?.title}</h6>{" "}
             <StyledEditIcon
@@ -81,7 +89,7 @@ export default function Sidebar({
           <h6 className="heading6">Create Task</h6>
         </StyledHeaderContainer>
         <SidebarForm
-          defaultValue={todo}
+          defaultValue={undefined}
           variant="create"
           toggleSidebar={onClose}
           onCreate={onCreate}
