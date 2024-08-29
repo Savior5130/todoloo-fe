@@ -34,6 +34,9 @@ const StyledInnerContainer = styled.div`
   flex-direction: column;
   gap: 0.75rem;
   width: 100%;
+  flex: 1;
+  border-radius: 1rem;
+  box-sizing: border-box;
 `;
 
 const StyledStatusContainer = styled.div`
@@ -97,6 +100,44 @@ export default function HomeScreen() {
     [setSelectedTodo]
   );
 
+  const handleOnDrag = (e: React.DragEvent, todo: Todo) => {
+    e.dataTransfer.setData("todo_id", todo.id.toString());
+    e.dataTransfer.setData("todo_status", todo.status.toString());
+  };
+
+  const handleOnDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+
+    const target = e.currentTarget as HTMLDivElement;
+    if (!target.classList.contains("dropzone"))
+      target.classList.add("dropzone");
+  };
+
+  const handleOnDragOut = (e: React.DragEvent) => {
+    const target = e.currentTarget as HTMLDivElement;
+    target.classList.remove("dropzone");
+  };
+
+  const handleOnDrop = (e: React.DragEvent, target_status: TodoStatus) => {
+    const target = e.currentTarget as HTMLDivElement;
+    const todo_id = e.dataTransfer.getData("todo_id");
+    const todo_status = e.dataTransfer.getData("todo_status");
+    target.classList.remove("dropzone");
+
+    if (todo_status !== target_status)
+      AxiosInstance.request({
+        url: `/todos/${todo_id}`,
+        method: "patch",
+        data: {
+          status: target_status,
+        },
+      }).then(({ data }) =>
+        setTodos((todos) =>
+          todos.map((todo) => (todo.id === data.id ? data : todo))
+        )
+      );
+  };
+
   const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTodos(todos.filter((todo) => todo.title.startsWith(e.target.value)));
   };
@@ -128,6 +169,7 @@ export default function HomeScreen() {
               description={todo.description}
               onClick={() => handleClickTodo(todo)}
               onClickIcon={() => handleClickTodoIcon(todo)}
+              onDrag={(e: React.DragEvent) => handleOnDrag(e, todo)}
             />
           );
         }),
@@ -154,7 +196,12 @@ export default function HomeScreen() {
             <StyledEllipse1 />
             <h6 className="heading7">To Do (1)</h6>
           </StyledStatusContainer>
-          <StyledInnerContainer>
+          <StyledInnerContainer
+            onDragExit={(e) => handleOnDragOut(e)}
+            onDragLeave={(e) => handleOnDragOut(e)}
+            onDragOver={handleOnDragOver}
+            onDrop={(e) => handleOnDrop(e, "TODO")}
+          >
             {handleRenderItem("TODO")}
             <Button variant="primary" onClick={handleClickAddTask}>
               <AiOutlinePlusCircle size={16} />
@@ -167,7 +214,12 @@ export default function HomeScreen() {
             <StyledEllipse2 />
             <h6 className="heading7">In Progress (1)</h6>
           </StyledStatusContainer>
-          <StyledInnerContainer>
+          <StyledInnerContainer
+            onDragExit={(e) => handleOnDragOut(e)}
+            onDragLeave={(e) => handleOnDragOut(e)}
+            onDragOver={handleOnDragOver}
+            onDrop={(e) => handleOnDrop(e, "IN_PROGRESS")}
+          >
             {handleRenderItem("IN_PROGRESS")}
           </StyledInnerContainer>
         </StyledCardContainer>
@@ -176,7 +228,12 @@ export default function HomeScreen() {
             <StyledEllipse3 />
             <h6 className="heading7">Done (1)</h6>
           </StyledStatusContainer>
-          <StyledInnerContainer>
+          <StyledInnerContainer
+            onDragExit={(e) => handleOnDragOut(e)}
+            onDragLeave={(e) => handleOnDragOut(e)}
+            onDragOver={handleOnDragOver}
+            onDrop={(e) => handleOnDrop(e, "DONE")}
+          >
             {handleRenderItem("DONE")}
           </StyledInnerContainer>
         </StyledCardContainer>

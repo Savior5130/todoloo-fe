@@ -6,4 +6,5 @@ export interface TodoItemProps {
   assignee?: User;
   onClick: () => void;
   onClickIcon: () => void;
+  onDrag: (e: React.DragEvent) => void;
 }

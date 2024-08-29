@@ -1,6 +1,8 @@
 :root {
   --muted: #8A8C9B;
-  --primary: #2E66DC;
+  --primary_1: #2E66DC;
+  --primary_2: #ABC2F1;
+  --primary_3: #EEF3FC;
   --text-default: #252744;
   --background_1: #FFFFFF;
   --background_2: #F0F2F4;
@@ -209,7 +211,7 @@ hr {
 }
 
 .primary {
-  color: var(--primary);
+  color: var(--primary_1);
 }
 
 /* width */
@@ -225,10 +227,22 @@ hr {
 /* Handle */
 ::-webkit-scrollbar-thumb {
   border-radius: 1rem;
-  background: var(--primary); 
+  background: var(--primary_1); 
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary)
+  background: var(--primary_1)
 }
+
+.dropzone::after {
+    content: "";
+    display: flex;
+    flex: 1;
+    background-color: red;
+    min-height: 2rem;
+    border-radius: 1rem;
+    box-sizing: border-box;
+    background-color: var(--primary_3);
+    border: dashed 0.125rem var(--primary_1)
+  }

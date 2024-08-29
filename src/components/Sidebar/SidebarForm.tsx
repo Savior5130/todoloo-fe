@@ -38,10 +38,15 @@ export default function SidebarForm({
   };
 
   const handleSaveChangesDisabled = useMemo(() => {
-    return (
-      title === defaultValue!.title && description === defaultValue!.description
-    );
+    return defaultValue
+      ? title === defaultValue!.title &&
+          description === defaultValue!.description
+      : false;
   }, [defaultValue, description, title]);
+
+  const handleAddTaskDisabled = useMemo(() => {
+    return title === "" && description === "";
+  }, [description, title]);
 
   const handleEditTodo = () => {
     if (defaultValue)
@@ -83,7 +88,7 @@ export default function SidebarForm({
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-      <Button onClick={handleOnlickCreate}>
+      <Button onClick={handleOnlickCreate} disabled={handleAddTaskDisabled}>
         <AiOutlinePlusCircle size={16} />
         Add Task
       </Button>

@@ -59,10 +59,11 @@ export default function TodoItem({
   description,
   onClick,
   onClickIcon,
+  onDrag,
 }: TodoItemProps) {
   const theme = useTheme();
   return (
-    <StyledTodoContainer draggable>
+    <StyledTodoContainer draggable onDragStart={onDrag}>
       <StyledTodoInnerContainer>
         <StyledTodoHeader>
           <StyledHeading className="heading7" onClick={onClick}>
