@@ -6,7 +6,6 @@ import { useCallback, useState } from "react";
 import Input from "../Input";
 import Button from "../Button";
 import { UserRole } from "../../types";
-import { AxiosInstance } from "../../api";
 import { useAuth } from "../../hooks";
 
 const StyledDialog = styled.dialog`
@@ -57,7 +56,10 @@ const StyledIcon = styled(AiOutlineClose)`
   cursor: pointer;
 `;
 
-export default function RegisterModal({ showModal }: AuthModalProps) {
+export default function RegisterModal({
+  showIcon = false,
+  showModal,
+}: AuthModalProps) {
   const [visible, setVisible] = useState(showModal);
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
@@ -66,20 +68,11 @@ export default function RegisterModal({ showModal }: AuthModalProps) {
 
   const toggleModal = useCallback(() => setVisible(!visible), [visible]);
 
-  const { login } = useAuth();
+  const { register } = useAuth();
 
   const handleSubmitButton = async (e: React.FormEvent) => {
     e.preventDefault();
-    AxiosInstance.post("/users/register", {
-      role,
-      username,
-      name,
-      password,
-    })
-      .then(() => {
-        login({ type: "local", username, password });
-      })
-      .catch((err) => console.log(err));
+    register({ role, username, name, password });
   };
 
   return (
@@ -89,7 +82,7 @@ export default function RegisterModal({ showModal }: AuthModalProps) {
       method="post"
     >
       <StyledDialog>
-        <StyledIcon onClick={() => toggleModal()} />
+        {showIcon && <StyledIcon onClick={() => toggleModal()} />}
         <h6 className="heading6">Sign Up</h6>
         <StyledContainer>
           <GoogleButton style={{ width: "100%" }} />

@@ -33,12 +33,19 @@ export interface loginBody {
   username: string;
   password: string;
 }
+export interface registerBody {
+  role: UserRole;
+  name: string;
+  username: string;
+  password: string;
+}
 
 export interface AuthContextType {
   isAuthenticated: boolean;
   user?: User;
   login: (body: loginBody) => void;
   logout: () => void;
+  register: (body: registerBody) => void;
 }
 
 export type TypographyVariant =

@@ -55,7 +55,10 @@ const StyledIcon = styled(AiOutlineClose)`
   cursor: pointer;
 `;
 
-export default function LoginModal({ showModal }: AuthModalProps) {
+export default function LoginModal({
+  showIcon = false,
+  showModal,
+}: AuthModalProps) {
   const [visible, setVisible] = useState(showModal);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -66,11 +69,7 @@ export default function LoginModal({ showModal }: AuthModalProps) {
 
   const handleSubmitButton = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      login({ type: "local", username, password });
-    } catch (error) {
-      console.log(error);
-    }
+    login({ type: "local", username, password });
   };
 
   const handleClickGoogleButton = () => {
@@ -80,7 +79,7 @@ export default function LoginModal({ showModal }: AuthModalProps) {
   return (
     <form onSubmit={handleSubmitButton}>
       <StyledDialog>
-        <StyledIcon onClick={() => toggleModal()} />
+        {showIcon && <StyledIcon onClick={() => toggleModal()} />}
         <h6 className="heading6">Sign In</h6>
         <StyledContainer>
           <GoogleButton

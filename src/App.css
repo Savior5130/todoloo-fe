@@ -18,6 +18,7 @@
   width: 100vw;
   height: 100vh;
   pointer-events: all;
+  background-color: var(--background_2);
 }
 
 hr {
