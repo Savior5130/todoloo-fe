@@ -43,6 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           localStorage.setItem("access_token", data.access_token),
           AxiosInstance.get("/users", { params: { username } }).then(
             ({ data }) => {
+              localStorage.setItem("user", JSON.stringify(data[0]));
               setUser(() => data[0]);
               toast.success("Login success");
               navigate("/home");
@@ -57,17 +58,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
     setUser(undefined);
     setToken("");
     setIsAuthenticated(false);
-    navigate("/");
+    navigate("/login");
   };
 
   return (
     <AuthContext.Provider
       value={{ user, isAuthenticated, login, logout, register }}
     >
-      {isAuthenticated ? children : null}
+      {children}
     </AuthContext.Provider>
   );
 };

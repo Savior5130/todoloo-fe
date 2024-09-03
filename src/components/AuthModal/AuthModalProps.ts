@@ -1,7 +1,7 @@
 import { UserRole } from "../../types";
 
 export interface AuthModalProps {
-  showIcon: boolean;
+  showIcon?: boolean;
   showModal: boolean;
 }
 
