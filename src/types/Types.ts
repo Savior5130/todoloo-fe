@@ -1,5 +1,10 @@
 export type TodoStatus = "TODO" | "IN_PROGRESS" | "DONE";
 
+export type TodoState = {
+  [status in TodoStatus]: Todo[];
+};
+
+
 export type Todo = {
   id: number;
   title: string;

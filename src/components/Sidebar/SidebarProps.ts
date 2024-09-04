@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
-import { Todo } from "../../types";
+import { Todo, TodoState } from "../../types";
 
 export type SidebarVariant = "read" | "edit" | "create";
 type SidebarFormVariant = "edit" | "create";
 
 export interface SidebarProps {
   onClose: () => void;
-  onCreate: Dispatch<SetStateAction<Todo[]>>;
+  todosState: [TodoState, Dispatch<SetStateAction<TodoState>>];
   onConfirm?: () => void;
   onChangeVariant: (variant: SidebarVariant) => void;
   todo: Todo | undefined;
@@ -17,7 +17,7 @@ export interface SidebarFormProps {
   variant: SidebarFormVariant;
   defaultValue?: Todo;
   toggleSidebar: () => void;
-  onCreate: Dispatch<SetStateAction<Todo[]>>;
+  todoState: [TodoState, Dispatch<SetStateAction<TodoState>>];
   onClickCancel?: (variant: SidebarVariant) => void;
 }
 

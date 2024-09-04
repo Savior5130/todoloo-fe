@@ -1,3 +1,5 @@
+import { Todo, TodoState } from "../types";
+
 export const fetchPathParam = (url: string, suffix: number | string) => {
   const stringSuffix = typeof suffix === "number" ? suffix.toString() : suffix;
   return `${url}/${stringSuffix}`;
@@ -12,4 +14,14 @@ export const fetchLocalTimefromISO = (date: string) => {
   const local_time = new Date(local_minutes).toLocaleTimeString("en-GB");
   const local_time_substr = local_time.split(":");
   return `${local_time_substr[0]}:${local_time_substr[1]}`;
+};
+
+export const transformTodos = (todos: Todo[]): TodoState => {
+  return todos.reduce(
+    (acc: TodoState, todo: Todo) => {
+      acc[todo.status].push(todo);
+      return acc;
+    },
+    { TODO: [], IN_PROGRESS: [], DONE: [] }
+  );
 };

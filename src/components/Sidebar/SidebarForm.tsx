@@ -6,6 +6,8 @@ import Textarea from "../Textarea";
 import Input from "../Input";
 import Button from "../Button";
 import { AxiosInstance } from "../../api";
+import { Todo } from "../../types";
+import { transformTodos } from "../../utils";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -24,17 +26,22 @@ export default function SidebarForm({
   defaultValue,
   variant,
   onClickCancel,
-  onCreate,
+  todoState,
   toggleSidebar,
 }: SidebarFormProps) {
   const [title, setTitle] = useState(defaultValue?.title || "");
+  const [todos, setTodos] = todoState;
   const [description, setDescription] = useState(
     defaultValue?.description || ""
   );
   const handleCreateTodo = () => {
-    AxiosInstance.post("/todos", { title, description }).then(({ data }) => {
-      onCreate((todos) => [...todos, data]);
-    });
+    AxiosInstance.post<Todo>("/todos", { title, description }).then(
+      ({ data }) => {
+        setTodos((todos) => {
+          return { ...todos, [data.status]: [...todos[data.status], data] };
+        });
+      }
+    );
   };
 
   const handleSaveChangesDisabled = useMemo(() => {
@@ -57,11 +64,13 @@ export default function SidebarForm({
           title,
           description,
         },
-      }).then(({ data }) =>
-        onCreate((todos) =>
-          todos.map((todo) => (todo.id === data.id ? data : todo))
-        )
-      );
+      }).then(({ data }) => {
+        const todos_values = Object.values(todos).flat();
+        const new_todos = todos_values.map((todo) =>
+          todo.id === data.id ? data : todo
+        );
+        setTodos(transformTodos(new_todos));
+      });
   };
 
   const handleOnlickCreate = () => {

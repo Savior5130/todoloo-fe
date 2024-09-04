@@ -47,7 +47,7 @@ const StyledEditIcon = styled(AiOutlineEdit)`
 
 export default function Sidebar({
   onClose,
-  onCreate,
+  todosState,
   onChangeVariant,
   todo,
   variant,
@@ -92,7 +92,7 @@ export default function Sidebar({
           defaultValue={undefined}
           variant="create"
           toggleSidebar={onClose}
-          onCreate={onCreate}
+          todoState={todosState}
         />
       </StyledSidebar>
     );
@@ -110,7 +110,7 @@ export default function Sidebar({
           onClickCancel={onChangeVariant}
           variant="edit"
           toggleSidebar={onClose}
-          onCreate={onCreate}
+          todoState={todosState}
         />
       </StyledSidebar>
     );

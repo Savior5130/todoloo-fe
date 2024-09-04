@@ -89,8 +89,9 @@ export default function SidebarCommentSection({ todo }: CommentDataProps) {
         message,
         todo_id: todo.id,
       },
-    }).then(() => {
+    }).then(({ data }) => {
       setMessage("");
+      setComments((curr) => [...curr, data]);
     });
   };
 

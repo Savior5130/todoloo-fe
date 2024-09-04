@@ -7,8 +7,9 @@ import Navbar, {
   SidebarVariant,
   TodoItem,
 } from "../components";
-import { Todo, TodoStatus } from "../types";
+import { Todo, TodoState, TodoStatus } from "../types";
 import { AxiosInstance } from "../api";
+import { transformTodos } from "../utils";
 
 const StyledContainer = styled.div`
   background-color: ${({ theme }) => theme.background_2};
@@ -70,7 +71,15 @@ const StyledEllipse3 = styled(StyledEllipse)`
 export default function HomeScreen() {
   const [sidebar, setSidebar] = useState(false);
   const [variant, setVariant] = useState<SidebarVariant>("read");
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const todosState = useState<TodoState>({
+    DONE: [],
+    IN_PROGRESS: [],
+    TODO: [],
+  });
+  const [todos, setTodos] = todosState;
+  const [filteredTodos, setFilteredTodos] = useState<TodoState | undefined>(
+    undefined
+  );
   const [selectedTodo, setSelectedTodo] = useState<Todo | undefined>(undefined);
 
   const handleOpenSidebar = () => setSidebar(true);
@@ -125,22 +134,33 @@ export default function HomeScreen() {
     target.classList.remove("dropzone");
 
     if (todo_status !== target_status)
-      AxiosInstance.request({
+      AxiosInstance.request<Todo>({
         url: `/todos/${todo_id}`,
         method: "patch",
         data: {
           status: target_status,
         },
-      }).then(({ data }) =>
-        setTodos((todos) =>
-          todos.map((todo) => (todo.id === data.id ? data : todo))
-        )
-      );
+      }).then(({ data }) => {
+        const todo_values = Object.values(todos).flat();
+        const newTodos = todo_values.map((todo) =>
+          todo.id === data.id ? data : todo
+        );
+        setTodos(transformTodos(newTodos));
+      });
   };
 
-  const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTodos(todos.filter((todo) => todo.title.startsWith(e.target.value)));
-  };
+  const handleChangeSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const todos_value = Object.values(todos);
+      const temp_filtered_todo = todos_value
+        .flat()
+        .filter((todo) =>
+          todo.title.toLowerCase().startsWith(e.target.value.toLowerCase())
+        );
+      setFilteredTodos(transformTodos(temp_filtered_todo));
+    },
+    [todos]
+  );
 
   const handleRenderSidebar = useMemo(
     () =>
@@ -150,15 +170,15 @@ export default function HomeScreen() {
           todo={selectedTodo}
           onClose={handleCloseSidebar}
           onChangeVariant={handleChangeVariant}
-          onCreate={setTodos}
+          todosState={todosState}
         />
       ),
-    [selectedTodo, sidebar, variant]
+    [selectedTodo, sidebar, todosState, variant]
   );
 
   const handleRenderItem = useCallback(
-    (todoStatus: TodoStatus) =>
-      todos
+    (todoStatus: TodoStatus, data: Todo[]) => {
+      return data
         .filter((todo) => todo.status === todoStatus)
         .map((todo) => {
           return (
@@ -172,18 +192,22 @@ export default function HomeScreen() {
               onDrag={(e: React.DragEvent) => handleOnDrag(e, todo)}
             />
           );
-        }),
-    [handleClickTodo, handleClickTodoIcon, todos]
+        });
+    },
+    [handleClickTodo, handleClickTodoIcon]
   );
 
   const fetchData = async () => {
     await AxiosInstance.request({ url: "/todos", method: "GET" }).then(
-      ({ data }) => setTodos(data)
+      ({ data }) => {
+        setTodos(transformTodos(data));
+      }
     );
   };
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -194,7 +218,10 @@ export default function HomeScreen() {
         <StyledCardContainer>
           <StyledStatusContainer>
             <StyledEllipse1 />
-            <h6 className="heading7">To Do (1)</h6>
+            <h6 className="heading7">
+              To Do (
+              {filteredTodos ? filteredTodos.TODO.length : todos.TODO.length})
+            </h6>
           </StyledStatusContainer>
           <StyledInnerContainer
             onDragExit={(e) => handleOnDragOut(e)}
@@ -202,7 +229,10 @@ export default function HomeScreen() {
             onDragOver={handleOnDragOver}
             onDrop={(e) => handleOnDrop(e, "TODO")}
           >
-            {handleRenderItem("TODO")}
+            {handleRenderItem(
+              "TODO",
+              filteredTodos ? filteredTodos.TODO : todos.TODO
+            )}
             <Button variant="primary" onClick={handleClickAddTask}>
               <AiOutlinePlusCircle size={16} />
               New Task
@@ -212,7 +242,13 @@ export default function HomeScreen() {
         <StyledCardContainer>
           <StyledStatusContainer>
             <StyledEllipse2 />
-            <h6 className="heading7">In Progress (1)</h6>
+            <h6 className="heading7">
+              In Progress (
+              {filteredTodos
+                ? filteredTodos.IN_PROGRESS.length
+                : todos.IN_PROGRESS.length}
+              )
+            </h6>
           </StyledStatusContainer>
           <StyledInnerContainer
             onDragExit={(e) => handleOnDragOut(e)}
@@ -220,13 +256,19 @@ export default function HomeScreen() {
             onDragOver={handleOnDragOver}
             onDrop={(e) => handleOnDrop(e, "IN_PROGRESS")}
           >
-            {handleRenderItem("IN_PROGRESS")}
+            {handleRenderItem(
+              "IN_PROGRESS",
+              filteredTodos ? filteredTodos.IN_PROGRESS : todos.IN_PROGRESS
+            )}
           </StyledInnerContainer>
         </StyledCardContainer>
         <StyledCardContainer>
           <StyledStatusContainer>
             <StyledEllipse3 />
-            <h6 className="heading7">Done (1)</h6>
+            <h6 className="heading7">
+              Done (
+              {filteredTodos ? filteredTodos.DONE.length : todos.DONE.length})
+            </h6>
           </StyledStatusContainer>
           <StyledInnerContainer
             onDragExit={(e) => handleOnDragOut(e)}
@@ -234,7 +276,10 @@ export default function HomeScreen() {
             onDragOver={handleOnDragOver}
             onDrop={(e) => handleOnDrop(e, "DONE")}
           >
-            {handleRenderItem("DONE")}
+            {handleRenderItem(
+              "DONE",
+              filteredTodos ? filteredTodos.DONE : todos.DONE
+            )}
           </StyledInnerContainer>
         </StyledCardContainer>
       </StyledContainer>
