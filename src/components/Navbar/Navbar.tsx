@@ -5,6 +5,7 @@ import { NavbarProps } from "./NavbarProps";
 import DropdownMenu from "../DropdownMenu";
 import Input from "../Input/Input";
 import { useAuth } from "../../hooks";
+import { debounce } from "../../utils";
 
 interface toggleMenuProps {
   showmenu: boolean;
@@ -62,7 +63,11 @@ export default function Navbar({ onSearch }: NavbarProps) {
   return (
     <StyledContainer>
       <StyledHeading className="heading5">ToDoloo</StyledHeading>
-      <Input type="text" placeholder="Search task" onChange={onSearch} />
+      <Input
+        type="text"
+        placeholder="Search task"
+        onChange={debounce(onSearch, 750)}
+      />
       <StyledProfileContainer>
         <h6 className="heading8">{user?.name}</h6>
         <StyledAvatar />
