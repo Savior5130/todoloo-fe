@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react";
-import GoogleButton from "react-google-button";
 import { AiOutlineClose } from "react-icons/ai";
 import styled from "styled-components";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
 import { AuthModalProps } from "./AuthModalProps";
 import { useAuth } from "../../hooks";
+import GoogleButton from "react-google-button";
 
 const StyledDialog = styled.dialog`
   min-width: 25rem;
@@ -63,17 +63,13 @@ export default function LoginModal({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const { login } = useAuth();
+  const { googleLogin, login } = useAuth();
 
   const toggleModal = useCallback(() => setVisible(!visible), [visible]);
 
   const handleSubmitButton = (e: React.FormEvent) => {
     e.preventDefault();
-    login({ type: "local", username, password });
-  };
-
-  const handleClickGoogleButton = () => {
-    login({ type: "oauth", username, password });
+    login({ username, password });
   };
 
   return (
@@ -82,10 +78,7 @@ export default function LoginModal({
         {showIcon && <StyledIcon onClick={() => toggleModal()} />}
         <h6 className="heading6">Sign In</h6>
         <StyledContainer>
-          <GoogleButton
-            style={{ width: "100%" }}
-            onClick={handleClickGoogleButton}
-          />
+          <GoogleButton style={{ width: "100%" }} onClick={googleLogin} />
           <StyledRowContainer>
             <hr />
             <span className="label1">or</span>

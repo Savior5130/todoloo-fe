@@ -31,13 +31,11 @@ export type User = {
   role: UserRole;
 };
 
-export type LoginMethod = "local" | "oauth";
-
 export interface loginBody {
-  type: LoginMethod;
-  username: string;
-  password: string;
+  username?: string;
+  password?: string;
 }
+
 export interface registerBody {
   role: UserRole;
   name: string;
@@ -48,6 +46,7 @@ export interface registerBody {
 export interface AuthContextType {
   isAuthenticated: boolean;
   user?: User;
+  googleLogin: () => void;
   login: (body: loginBody) => void;
   logout: () => void;
   register: (body: registerBody) => void;

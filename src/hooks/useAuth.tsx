@@ -26,35 +26,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = ({ role, name, username, password }: registerBody) => {
     AxiosInstance.post("/users/register", { role, username, name, password })
       .then(async () => {
-        await login({ type: "local", username, password });
+        await login({ username, password });
       })
       .catch(() => toast.warning("Server error occured"));
   };
 
-  const login = ({ type, username, password }: loginBody): Promise<void> =>
+  const login = ({ username = "", password = "" }: loginBody): Promise<void> =>
     AxiosInstance.request({
-      url: type === "local" ? "/auth/login" : "/auth/google/login",
-      method: type === "local" ? "post" : "get",
-      data: type === "local" && { username, password },
+      url: "/auth/login",
+      method: "post",
+      data: { username, password },
     })
-      .then(
-        ({ data }) => (
-          setIsAuthenticated(true),
-          localStorage.setItem("access_token", data.access_token),
-          AxiosInstance.get("/users", { params: { username } }).then(
-            ({ data }) => {
-              localStorage.setItem("user", JSON.stringify(data[0]));
-              setUser(() => data[0]);
-              toast.success("Login success");
-              navigate("/home");
-            }
-          )
-        )
-      )
+      .then(({ data }) => {
+        const { token, ...userInfo } = data;
+        localStorage.setItem("access_token", token);
+        localStorage.setItem("user", JSON.stringify(userInfo));
+        setUser(userInfo);
+        navigate("/home");
+      })
       .catch(() => {
         setIsAuthenticated(false);
         toast.warning("Server error occured");
       });
+
+  const googleLogin = () =>
+    (window.location.href = "http://localhost:3000/api/auth/google/login");
 
   const logout = () => {
     localStorage.removeItem("access_token");
@@ -65,9 +61,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     navigate("/login");
   };
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+    if (token) {
+      localStorage.setItem("access_token", token);
+      if (!user) {
+        AxiosInstance.get("/users/info").then(({ data }) => {
+          setUser(data);
+          localStorage.setItem("user", JSON.stringify(data));
+          navigate("/home");
+        });
+      }
+      toast.success("Login success");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, login, logout, register }}
+      value={{ user, isAuthenticated, googleLogin, login, logout, register }}
     >
       {children}
     </AuthContext.Provider>
