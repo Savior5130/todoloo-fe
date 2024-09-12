@@ -275,3 +275,41 @@ div{
     background-color: var(--primary_3);
     border: dashed 0.125rem var(--primary_1)
   }
+
+  /*Extra small devices (phones, 600px, and down) */
+@media only screen and (max-width: 600px) {
+  html{
+    font-size: 14px;
+  }
+  #root{
+    background-color: var(--background_1);
+  }
+}
+/*Small devices (tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  html{
+    font-size: 14px;
+  }
+}
+
+/*Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  html{
+    font-size: 14px;
+  }
+}
+
+/*Large devices (laptops/desktops, 992 and up) */
+@media only screen and (min-width: 992px) {
+  html{
+    font-size: 16px;
+  }
+}
+
+/*Extra Large devices (laptops/desktops, 1200 and up) */
+@media only screen and (min-width: 1200px) {
+  html{
+    font-size: 18px;
+  }
+}
+

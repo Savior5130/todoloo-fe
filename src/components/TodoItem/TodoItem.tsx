@@ -52,6 +52,8 @@ const StyledIcon = styled(AiOutlineEdit)`
 
 const StyledMutedText = styled.p`
   color: ${({ theme }) => theme.text_muted};
+  max-height: 6rem;
+  overflow: hidden;
 `;
 
 export default function TodoItem({

@@ -19,6 +19,16 @@ const StyledContainer = styled.div`
   gap: 2rem;
   flex: 1;
   align-self: stretch;
+  @media screen and (max-width: 768px) {
+    padding: 1rem 2rem;
+    gap: 1.5rem;
+  }
+  @media screen and (max-width: 600px) {
+    padding: 1rem 0;
+    padding-bottom: 2rem;
+    flex-direction: column;
+    background-color: ${({ theme }) => theme.background_2};
+  }
 `;
 
 const StyledCardContainer = styled.div`
@@ -28,6 +38,10 @@ const StyledCardContainer = styled.div`
   gap: 1.25rem;
   flex: 1;
   align-self: stretch;
+
+  @media screen and (max-width: 600px) {
+    gap: 0.5rem;
+  }
 `;
 
 const StyledInnerContainer = styled.div`
@@ -38,6 +52,10 @@ const StyledInnerContainer = styled.div`
   flex: 1;
   border-radius: 1rem;
   box-sizing: border-box;
+
+  @media screen and (max-width: 600px) {
+    padding: 0.25rem 1rem;
+  }
 `;
 
 const StyledStatusContainer = styled.div`
@@ -48,6 +66,12 @@ const StyledStatusContainer = styled.div`
   align-self: stretch;
   border-radius: 1rem;
   background-color: ${({ theme }) => theme.background_1};
+
+  @media screen and (max-width: 600px) {
+    border-radius: 0;
+    background-color: transparent;
+    padding: 0.5rem 1.25rem;
+  }
 `;
 
 const StyledEllipse = styled.div`
@@ -66,6 +90,12 @@ const StyledEllipse2 = styled(StyledEllipse)`
 
 const StyledEllipse3 = styled(StyledEllipse)`
   background-color: ${({ theme }) => theme.success_1};
+`;
+
+const StyledButton = styled(Button)`
+  @media screen and (max-width: 600px) {
+    display: none;
+  }
 `;
 
 export default function HomeScreen() {
@@ -213,7 +243,7 @@ export default function HomeScreen() {
 
   return (
     <>
-      <Navbar onSearch={handleChangeSearch} />
+      <Navbar onSearch={handleChangeSearch} onAddTask={handleClickAddTask} />
       {handleRenderSidebar}
       <StyledContainer>
         <StyledCardContainer>
@@ -234,10 +264,10 @@ export default function HomeScreen() {
               "TODO",
               filteredTodos ? filteredTodos.TODO : todos.TODO
             )}
-            <Button variant="primary" onClick={handleClickAddTask}>
+            <StyledButton variant="primary" onClick={handleClickAddTask}>
               <AiOutlinePlusCircle size={16} />
               New Task
-            </Button>
+            </StyledButton>
           </StyledInnerContainer>
         </StyledCardContainer>
         <StyledCardContainer>

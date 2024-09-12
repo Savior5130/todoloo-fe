@@ -6,7 +6,8 @@ import DropdownMenu from "../DropdownMenu";
 import Input from "../Input/Input";
 import { useAuth } from "../../hooks";
 import { debounce } from "../../utils";
-import { AiOutlineLogout } from "react-icons/ai";
+import { AiOutlineLogout, AiOutlinePlusCircle } from "react-icons/ai";
+import Button from "../Button";
 
 interface toggleMenuProps {
   showmenu: boolean;
@@ -14,10 +15,20 @@ interface toggleMenuProps {
 
 const StyledContainer = styled.div`
   display: flex;
+  box-sizing: border-box;
   padding: 1rem 4rem;
+  gap: 1rem;
   justify-content: space-between;
   align-items: center;
   background-color: ${({ theme }) => theme.background_1};
+
+  @media screen and (max-width: 768px) {
+    padding: 0.75rem 2rem;
+  }
+
+  @media screen and (max-width: 600px) {
+    padding: 0.75rem 1rem;
+  }
 `;
 
 const StyledAvatar = styled.div`
@@ -29,6 +40,7 @@ const StyledAvatar = styled.div`
 
 const StyledProfileContainer = styled.div`
   display: flex;
+  flex: 0 1;
   align-items: center;
   position: relative;
   gap: 0.75rem;
@@ -57,7 +69,27 @@ const StyledIconContainer = styled.div<toggleMenuProps>`
   }
 `;
 
-export default function Navbar({ onSearch }: NavbarProps) {
+const StyledHeadingContainer = styled.div`
+  white-space: nowrap;
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const StyledButton = styled(Button)`
+  @media screen and (min-width: 600px) {
+    display: none;
+  }
+`;
+
+const StyledInput = styled(Input)`
+  @media screen and (max-width: 600px) {
+    display: none;
+  }
+`;
+
+export default function Navbar({ onSearch, onAddTask }: NavbarProps) {
   const { user, logout } = useAuth();
   const theme = useTheme();
   const [menu, setMenu] = useState(false);
@@ -65,13 +97,19 @@ export default function Navbar({ onSearch }: NavbarProps) {
   return (
     <StyledContainer>
       <StyledHeading className="heading5">ToDoloo</StyledHeading>
-      <Input
+      <StyledInput
         type="text"
         placeholder="Search task"
         onChange={debounce(onSearch, 750)}
       />
       <StyledProfileContainer>
-        <h6 className="heading8">{user?.name}</h6>
+        <StyledHeadingContainer>
+          <h6 className="heading8">{user?.name}</h6>
+        </StyledHeadingContainer>
+        <StyledButton variant="primary" onClick={onAddTask}>
+          <AiOutlinePlusCircle size={16} />
+          New Task
+        </StyledButton>
         <StyledAvatar />
         <StyledIconContainer
           showmenu={menu}

@@ -11,6 +11,10 @@ const StyledPrimaryButton = styled.button`
   justify-content: center;
   border-radius: 1rem;
   border: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: auto;
 
   &:hover:enabled {
     box-shadow: 0px 0.5rem 1rem 0px rgba(80, 136, 255, 0.39);

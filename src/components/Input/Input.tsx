@@ -18,7 +18,7 @@ const StyledInput = styled.input`
   background-color: ${({ theme }) => theme.background_2};
   color: ${({ theme }) => theme.text_muted};
   padding: 0.75rem 1.25rem;
-  min-width: 10rem;
+  min-width: min(10rem, 10vw);
 
   &:focus {
     outline: solid 2px ${({ theme }) => theme.primary_1};

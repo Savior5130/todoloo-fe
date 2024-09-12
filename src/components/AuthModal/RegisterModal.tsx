@@ -56,6 +56,14 @@ const StyledIcon = styled(AiOutlineClose)`
   cursor: pointer;
 `;
 
+const StyledBottomContainer = styled.div`
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  align-items: center;
+  margin: auto;
+`;
+
 export default function RegisterModal({
   showIcon = false,
   showModal,
@@ -116,8 +124,8 @@ export default function RegisterModal({
             Sign Up
           </Button>
         </StyledContainer>
-        <p className="label1">
-          Already have an account?
+        <StyledBottomContainer>
+          <p className="label1">Already have an account?</p>
           <Button
             variant="link"
             onClick={() => (window.location.href = "/login")}
@@ -125,7 +133,7 @@ export default function RegisterModal({
             {" "}
             Sign in now
           </Button>
-        </p>
+        </StyledBottomContainer>
       </StyledDialog>
     </form>
   );

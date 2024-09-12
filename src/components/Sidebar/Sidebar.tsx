@@ -24,6 +24,10 @@ const StyledSidebar = styled.div`
   gap: 2.5rem;
   position: fixed;
   right: 0;
+
+  @media only screen and (max-width: 600px) {
+    width: 100vw;
+  }
 `;
 
 const StyledHeaderContainer = styled.div`
