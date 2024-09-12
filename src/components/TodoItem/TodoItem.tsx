@@ -1,6 +1,7 @@
 import { AiOutlineEdit } from "react-icons/ai";
 import styled, { useTheme } from "styled-components";
 import { TodoItemProps } from "./TodoItemProps";
+import { useAuth } from "../../hooks";
 
 const StyledTodoContainer = styled.div`
   display: flex;
@@ -62,6 +63,8 @@ export default function TodoItem({
   onDrag,
 }: TodoItemProps) {
   const theme = useTheme();
+  const { user } = useAuth();
+
   return (
     <StyledTodoContainer draggable onDragStart={onDrag}>
       <StyledTodoInnerContainer>
@@ -79,7 +82,8 @@ export default function TodoItem({
       </StyledTodoInnerContainer>
       {assignee && (
         <StyledMutedText className="label4">
-          Assigned to <b>{assignee.name}</b>
+          Assigned to{" "}
+          <b>{user!.name === assignee.name ? "You" : assignee.name}</b>
         </StyledMutedText>
       )}
     </StyledTodoContainer>

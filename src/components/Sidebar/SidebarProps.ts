@@ -9,7 +9,10 @@ export interface SidebarProps {
   todosState: [TodoState, Dispatch<SetStateAction<TodoState>>];
   onConfirm?: () => void;
   onChangeVariant: (variant: SidebarVariant) => void;
-  todo: Todo | undefined;
+  selectedTodoState: [
+    Todo | undefined,
+    Dispatch<SetStateAction<Todo | undefined>>
+  ];
   variant: SidebarVariant;
 }
 

@@ -9,6 +9,7 @@ import DropdownMenu, { menuItem } from "../DropdownMenu";
 import { AxiosInstance } from "../../api";
 import { useAuth } from "../../hooks";
 import { User } from "../../types";
+import { transformTodos } from "../../utils";
 
 const StyledSidebar = styled.div`
   padding: 0.5rem;
@@ -86,13 +87,15 @@ export default function Sidebar({
   onClose,
   todosState,
   onChangeVariant,
-  todo,
+  selectedTodoState,
   variant,
 }: SidebarProps) {
   const theme = useTheme();
   const [showMenu, setShowMenu] = useState(false);
   const { user } = useAuth();
   const [menu, setMenu] = useState<menuItem[]>([]);
+  const [todos, setTodos] = todosState;
+  const [todo, setTodo] = selectedTodoState;
 
   useEffect(() => {
     if (showMenu) {
@@ -110,7 +113,16 @@ export default function Sidebar({
                   data: {
                     assignee: datum,
                   },
-                }).then(() => setShowMenu(false));
+                }).then(({ data }) => {
+                  const todos_values = Object.values(todos).flat();
+                  const new_todos = todos_values.map((mappedTodo) =>
+                    mappedTodo.id === data.id ? data : mappedTodo
+                  );
+                  setTodos(transformTodos(new_todos));
+                  setTodo(data);
+
+                  setShowMenu(false);
+                });
               },
             };
           });
@@ -132,7 +144,7 @@ export default function Sidebar({
         }
       );
     }
-  }, [showMenu, todo, user]);
+  }, [setTodo, setTodos, showMenu, todo, todos, user]);
 
   if (variant == "read")
     return (

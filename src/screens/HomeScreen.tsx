@@ -80,7 +80,8 @@ export default function HomeScreen() {
   const [filteredTodos, setFilteredTodos] = useState<TodoState | undefined>(
     undefined
   );
-  const [selectedTodo, setSelectedTodo] = useState<Todo | undefined>(undefined);
+  const selectedTodoState = useState<Todo | undefined>(undefined);
+  const setSelectedTodo = selectedTodoState[1];
 
   const handleOpenSidebar = () => setSidebar(true);
   const handleCloseSidebar = () => setSidebar(false);
@@ -167,13 +168,13 @@ export default function HomeScreen() {
       sidebar && (
         <Sidebar
           variant={variant}
-          todo={selectedTodo}
+          selectedTodoState={selectedTodoState}
           onClose={handleCloseSidebar}
           onChangeVariant={handleChangeVariant}
           todosState={todosState}
         />
       ),
-    [selectedTodo, sidebar, todosState, variant]
+    [selectedTodoState, sidebar, todosState, variant]
   );
 
   const handleRenderItem = useCallback(

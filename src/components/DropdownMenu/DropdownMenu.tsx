@@ -37,9 +37,9 @@ export default function DropdownMenu({
   header,
   menus,
 }: DropdownProps) {
-  const handleRenderItem = menus.map((menu) => {
+  const handleRenderItem = menus.map((menu, idx) => {
     return (
-      <StyledDropdownItem className="heading8" onClick={menu.onClick}>
+      <StyledDropdownItem className="heading8" onClick={menu.onClick} key={idx}>
         {menu.children}
         {menu.title}
       </StyledDropdownItem>
