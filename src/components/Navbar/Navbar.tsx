@@ -6,6 +6,7 @@ import DropdownMenu from "../DropdownMenu";
 import Input from "../Input/Input";
 import { useAuth } from "../../hooks";
 import { debounce } from "../../utils";
+import { AiOutlineLogout } from "react-icons/ai";
 
 interface toggleMenuProps {
   showmenu: boolean;
@@ -29,6 +30,7 @@ const StyledAvatar = styled.div`
 const StyledProfileContainer = styled.div`
   display: flex;
   align-items: center;
+  position: relative;
   gap: 0.75rem;
 `;
 
@@ -77,13 +79,21 @@ export default function Navbar({ onSearch }: NavbarProps) {
         >
           <StyledIcon size={14} color={theme.text_muted} />
         </StyledIconContainer>
+        {menu && (
+          <DropdownMenu
+            containerStyle={{ top: "3.75rem" }}
+            menus={[
+              {
+                title: "Logout",
+                onClick: logout,
+                children: (
+                  <AiOutlineLogout size={"1rem"} color={theme.text_muted} />
+                ),
+              },
+            ]}
+          />
+        )}
       </StyledProfileContainer>
-      {menu && (
-        <DropdownMenu
-          showMenu={menu}
-          menus={[{ title: "Logout", onClick: logout }]}
-        />
-      )}
     </StyledContainer>
   );
 }

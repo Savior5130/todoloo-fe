@@ -1,3 +1,27 @@
+@font-face {
+  font-family: 'SF Pro Display';
+  font-weight: 400;
+  src: local('SFProDisplay-Regular'), url('./assets/fonts//SFPRODISPLAYREGULAR.OTF');
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  font-weight: 500;
+  src: local('SFProDisplay-Medium'), url('./assets/fonts//SFPRODISPLAYMEDIUM.OTF');
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  font-weight: 600;
+  src: local('SFProDisplay-Semibold'), url('./assets/fonts//SFPRODISPLAYSEMIBOLD.ttf');
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  font-weight: 700;
+  src: local('SFProDisplay-Bold'), url('./assets/fonts//SFPRODISPLAYBOLD.OTF');
+}
+
 :root {
   --muted: #8A8C9B;
   --primary_1: #2E66DC;
@@ -8,7 +32,7 @@
   --background_2: #F0F2F4;
   --background_3: #F8F9FA;
   --background_4: #D4D8DB;
-  font-family: 'SF Pro Display', Inter, Roboto;
+  font-family: 'SF Pro Display' !important;
 }
 
 #root {
@@ -126,7 +150,7 @@ div{
 .heading8 {
   font-size: 0.875rem;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 135%; /* 1.18125rem */
   letter-spacing: 0.00875rem;
   margin: 0;

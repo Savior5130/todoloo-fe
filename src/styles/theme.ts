@@ -17,8 +17,8 @@ export interface ThemeProps {
 }
 export const lightTheme: ThemeProps = {
   background_1: "#FFFFFF;",
-  background_2: "#F0F2F4;",
-  background_3: "#F8F9FA",
+  background_2: "#F8F9FA;",
+  background_3: "#F0F2F4",
   background_4: "#D4D8DB",
   text_default: "#252744",
   text_muted: "#8A8C9B",

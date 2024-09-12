@@ -15,7 +15,7 @@ const StyledSpan = styled.span`
 const StyledInput = styled.textarea`
   border-radius: 0.75rem;
   border: solid 1px ${({ theme }) => theme.background_4};
-  background-color: ${({ theme }) => theme.background_3};
+  background-color: ${({ theme }) => theme.background_2};
   color: ${({ theme }) => theme.text_muted};
   padding: 0.75rem 1.25rem;
   min-width: 10rem;

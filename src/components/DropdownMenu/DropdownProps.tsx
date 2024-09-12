@@ -1,9 +1,14 @@
+import { ReactNode } from "react";
+
 export interface DropdownProps {
-  showMenu: boolean;
+  containerStyle?: React.CSSProperties;
+  header?: string;
   menus: menuItem[];
 }
 
-interface menuItem {
+export interface menuItem {
   title: string;
+  metadata?: unknown;
+  children?: ReactNode;
   onClick: () => void;
 }

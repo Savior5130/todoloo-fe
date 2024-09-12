@@ -10,7 +10,7 @@ import { AiOutlineSend } from "react-icons/ai";
 import { useAuth } from "../../hooks";
 
 interface StyledCommentItemProps {
-  selfAuthored: boolean;
+  selfauthored: boolean;
 }
 
 const StyledContainer = styled.div`
@@ -31,15 +31,15 @@ const StyledCommentContainer = styled.div`
 
 const StyledCommentItem = styled.div<StyledCommentItemProps>`
   display: block;
-  margin-left: ${({ selfAuthored }) => (selfAuthored ? "auto" : "unset")};
-  text-align: ${({ selfAuthored }) => (selfAuthored ? "right" : "left")};
+  margin-left: ${({ selfauthored }) => (selfauthored ? "auto" : "unset")};
+  text-align: ${({ selfauthored }) => (selfauthored ? "right" : "left")};
   width: fit-content;
   flex-direction: column;
   margin-bottom: 0.5rem;
   border-radius: 1rem;
   padding: 1rem 0.75rem;
   padding-bottom: 0.5rem;
-  background-color: ${({ theme }) => theme.background_3};
+  background-color: ${({ theme }) => theme.background_2};
   max-width: 20rem;
 
   &:hover {
@@ -67,7 +67,7 @@ export default function SidebarCommentSection({ todo }: CommentDataProps) {
     () =>
       comments.map((item) => {
         return (
-          <StyledCommentItem selfAuthored={user?.name === item.creator.name}>
+          <StyledCommentItem selfauthored={user?.name === item.creator.name}>
             <h6 className="heading8">{item.creator.name}</h6>
             <p className="body3 ">{item.message}</p>
             <StyledTimeContainer>

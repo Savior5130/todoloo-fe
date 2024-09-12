@@ -60,6 +60,8 @@ const StyledGhostButton = styled(StyledPrimaryButton)`
 `;
 
 const StyledLink = styled.span`
+  display: flex;
+  align-items: center;
   color: ${({ theme }) => theme.primary_1};
   width: fit-content;
 

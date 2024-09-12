@@ -12,7 +12,7 @@ import { AxiosInstance } from "../api";
 import { transformTodos } from "../utils";
 
 const StyledContainer = styled.div`
-  background-color: ${({ theme }) => theme.background_2};
+  background-color: ${({ theme }) => theme.background_3};
   display: flex;
   padding: 2.5rem 4rem;
   align-items: flex-start;

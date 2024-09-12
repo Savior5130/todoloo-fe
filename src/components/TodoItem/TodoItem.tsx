@@ -78,7 +78,9 @@ export default function TodoItem({
         <StyledMutedText className="muted body4">{description}</StyledMutedText>
       </StyledTodoInnerContainer>
       {assignee && (
-        <StyledMutedText className="label4">Assigned to Mahdy</StyledMutedText>
+        <StyledMutedText className="label4">
+          Assigned to <b>{assignee.name}</b>
+        </StyledMutedText>
       )}
     </StyledTodoContainer>
   );

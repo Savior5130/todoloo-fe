@@ -4,6 +4,11 @@ import SidebarCommentSection from "./SidebarCommentSection";
 import SidebarForm from "./SidebarForm";
 import { AiOutlineClose, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
 import Button from "../Button";
+import { useEffect, useState } from "react";
+import DropdownMenu, { menuItem } from "../DropdownMenu";
+import { AxiosInstance } from "../../api";
+import { useAuth } from "../../hooks";
+import { User } from "../../types";
 
 const StyledSidebar = styled.div`
   padding: 0.5rem;
@@ -25,6 +30,7 @@ const StyledHeaderContainer = styled.div`
   flex-direction: column;
   gap: 0.5rem;
   padding: 0 1.25rem;
+  position: relative;
 `;
 
 const StyledTitleContainer = styled.div`
@@ -45,6 +51,37 @@ const StyledEditIcon = styled(AiOutlineEdit)`
   cursor: pointer;
 `;
 
+const StyledAvatar = styled.div`
+  border-radius: 100%;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: ${({ theme }) => theme.primary_2};
+`;
+
+const StyledBadge = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  padding: 0.25rem 0.75rem;
+  color: ${({ theme }) => theme.text_muted};
+  background-color: ${({ theme }) => theme.background_2};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.primary_3};
+    color: ${({ theme }) => theme.primary_1};
+    transition: all 1s;
+    cursor: pointer;
+  }
+`;
+
+const StyledSpan = styled.span`
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
 export default function Sidebar({
   onClose,
   todosState,
@@ -53,6 +90,49 @@ export default function Sidebar({
   variant,
 }: SidebarProps) {
   const theme = useTheme();
+  const [showMenu, setShowMenu] = useState(false);
+  const { user } = useAuth();
+  const [menu, setMenu] = useState<menuItem[]>([]);
+
+  useEffect(() => {
+    if (showMenu) {
+      AxiosInstance.get(user!.role === "user" ? "users/common" : "users").then(
+        ({ data }) => {
+          const tempMenu: menuItem[] = data.map((datum: User) => {
+            return {
+              title: datum.name,
+              children: <StyledAvatar />,
+              metadata: datum,
+              onClick: () => {
+                AxiosInstance.request({
+                  url: `/todos/${todo!.id}`,
+                  method: "patch",
+                  data: {
+                    assignee: datum,
+                  },
+                }).then(() => setShowMenu(false));
+              },
+            };
+          });
+          if (todo!.assignee) {
+            tempMenu.push({
+              title: "Remove assignee",
+              onClick: () => {
+                AxiosInstance.request({
+                  url: `/todos/${todo!.id}`,
+                  method: "patch",
+                  data: {
+                    assignee: null,
+                  },
+                }).then(() => setShowMenu(false));
+              },
+            });
+          }
+          setMenu(tempMenu);
+        }
+      );
+    }
+  }, [showMenu, todo, user]);
 
   if (variant == "read")
     return (
@@ -60,12 +140,30 @@ export default function Sidebar({
         <StyledCloseIcon onClick={onClose} />
         <StyledHeaderContainer>
           {todo && todo.assignee ? (
-            <p className="label1">Assigned to</p>
+            <StyledSpan className="label1">
+              Assigned to{" "}
+              <StyledBadge
+                className="heading8"
+                onClick={() => setShowMenu((showMenu) => !showMenu)}
+              >
+                {todo.assignee.name}
+              </StyledBadge>
+            </StyledSpan>
           ) : (
-            <Button variant="link">
+            <Button
+              variant="link"
+              onClick={() => setShowMenu((showMenu) => !showMenu)}
+            >
               <AiOutlinePlus size={16} />
               Assign Task
             </Button>
+          )}
+          {showMenu && (
+            <DropdownMenu
+              header="Assign to"
+              menus={menu}
+              containerStyle={{ top: "1.5rem" }}
+            />
           )}
           <StyledTitleContainer>
             <h6 className="heading6">{todo?.title}</h6>{" "}
@@ -73,7 +171,7 @@ export default function Sidebar({
               size={"1.25rem"}
               className="edit-icon"
               onClick={() => onChangeVariant("edit")}
-              color={theme.text_muted}
+              color={theme.primary_1}
             />
           </StyledTitleContainer>
           <p className="body2">{todo?.description}</p>
