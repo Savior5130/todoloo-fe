@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import axios from "axios";
 import styled from "styled-components";
 import Navbar, {
   Button,
@@ -8,7 +9,6 @@ import Navbar, {
   TodoItem,
 } from "../components";
 import { Todo, TodoState, TodoStatus } from "../types";
-import { AxiosInstance } from "../api";
 import { transformTodos } from "../utils";
 
 const StyledContainer = styled.div`
@@ -165,19 +165,21 @@ export default function HomeScreen() {
     target.classList.remove("dropzone");
 
     if (todo_status !== target_status)
-      AxiosInstance.request<Todo>({
-        url: `/todos/${todo_id}`,
-        method: "patch",
-        data: {
-          status: target_status,
-        },
-      }).then(({ data }) => {
-        const todo_values = Object.values(todos).flat();
-        const newTodos = todo_values.map((todo) =>
-          todo.id === data.id ? data : todo
-        );
-        setTodos(transformTodos(newTodos));
-      });
+      axios
+        .request<Todo>({
+          url: `/todos/${todo_id}`,
+          method: "patch",
+          data: {
+            status: target_status,
+          },
+        })
+        .then(({ data }) => {
+          const todo_values = Object.values(todos).flat();
+          const newTodos = todo_values.map((todo) =>
+            todo.id === data.id ? data : todo
+          );
+          setTodos(transformTodos(newTodos));
+        });
   };
 
   const handleChangeSearch = useCallback(
@@ -228,15 +230,12 @@ export default function HomeScreen() {
     [handleClickTodo, handleClickTodoIcon]
   );
 
-  const fetchData = async () => {
-    await AxiosInstance.request({ url: "/todos", method: "GET" }).then(
-      ({ data }) => {
-        setTodos(transformTodos(data));
-      }
-    );
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      await axios.request({ url: "/todos", method: "GET" }).then(({ data }) => {
+        setTodos(transformTodos(data));
+      });
+    };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

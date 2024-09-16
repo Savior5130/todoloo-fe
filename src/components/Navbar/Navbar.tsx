@@ -4,10 +4,11 @@ import styled, { useTheme } from "styled-components";
 import { NavbarProps } from "./NavbarProps";
 import DropdownMenu from "../DropdownMenu";
 import Input from "../Input/Input";
-import { useAuth } from "../../hooks";
+import { useAppSelector, useAuth } from "../../hooks";
 import { debounce } from "../../utils";
 import { AiOutlineLogout, AiOutlinePlusCircle } from "react-icons/ai";
 import Button from "../Button";
+import { selectUser } from "../../redux/authSlice";
 
 interface toggleMenuProps {
   showmenu: boolean;
@@ -90,9 +91,10 @@ const StyledInput = styled(Input)`
 `;
 
 export default function Navbar({ onSearch, onAddTask }: NavbarProps) {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const theme = useTheme();
   const [menu, setMenu] = useState(false);
+  const user = useAppSelector(selectUser);
 
   return (
     <StyledContainer>

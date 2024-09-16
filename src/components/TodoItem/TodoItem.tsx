@@ -1,7 +1,8 @@
 import { AiOutlineEdit } from "react-icons/ai";
 import styled, { useTheme } from "styled-components";
 import { TodoItemProps } from "./TodoItemProps";
-import { useAuth } from "../../hooks";
+import { useAppSelector } from "../../hooks";
+import { selectUser } from "../../redux/authSlice";
 
 const StyledTodoContainer = styled.div`
   display: flex;
@@ -65,7 +66,7 @@ export default function TodoItem({
   onDrag,
 }: TodoItemProps) {
   const theme = useTheme();
-  const { user } = useAuth();
+  const user = useAppSelector(selectUser);
 
   return (
     <StyledTodoContainer draggable onDragStart={onDrag}>

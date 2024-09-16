@@ -1,15 +1,16 @@
+import { useEffect, useState } from "react";
+import { AiOutlineClose, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
+import axios from "axios";
 import styled, { useTheme } from "styled-components";
 import { SidebarProps } from "./SidebarProps";
 import SidebarCommentSection from "./SidebarCommentSection";
 import SidebarForm from "./SidebarForm";
-import { AiOutlineClose, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
 import Button from "../Button";
-import { useEffect, useState } from "react";
 import DropdownMenu, { menuItem } from "../DropdownMenu";
-import { AxiosInstance } from "../../api";
-import { useAuth } from "../../hooks";
+import { useAppSelector } from "../../hooks";
 import { User } from "../../types";
 import { transformTodos } from "../../utils";
+import { selectUser } from "../../redux/authSlice";
 
 const StyledSidebar = styled.div`
   padding: 0.5rem;
@@ -96,37 +97,40 @@ export default function Sidebar({
 }: SidebarProps) {
   const theme = useTheme();
   const [showMenu, setShowMenu] = useState(false);
-  const { user } = useAuth();
+  const user = useAppSelector(selectUser);
   const [menu, setMenu] = useState<menuItem[]>([]);
   const [todos, setTodos] = todosState;
   const [todo, setTodo] = selectedTodoState;
 
   useEffect(() => {
     if (showMenu) {
-      AxiosInstance.get(user!.role === "user" ? "users/common" : "users").then(
-        ({ data }) => {
+      axios
+        .get(user!.role === "user" ? "users/common" : "users")
+        .then(({ data }) => {
           const tempMenu: menuItem[] = data.map((datum: User) => {
             return {
               title: datum.name,
               children: <StyledAvatar />,
               metadata: datum,
               onClick: () => {
-                AxiosInstance.request({
-                  url: `/todos/${todo!.id}`,
-                  method: "patch",
-                  data: {
-                    assignee: datum,
-                  },
-                }).then(({ data }) => {
-                  const todos_values = Object.values(todos).flat();
-                  const new_todos = todos_values.map((mappedTodo) =>
-                    mappedTodo.id === data.id ? data : mappedTodo
-                  );
-                  setTodos(transformTodos(new_todos));
-                  setTodo(data);
+                axios
+                  .request({
+                    url: `/todos/${todo!.id}`,
+                    method: "patch",
+                    data: {
+                      assignee: datum,
+                    },
+                  })
+                  .then(({ data }) => {
+                    const todos_values = Object.values(todos).flat();
+                    const new_todos = todos_values.map((mappedTodo) =>
+                      mappedTodo.id === data.id ? data : mappedTodo
+                    );
+                    setTodos(transformTodos(new_todos));
+                    setTodo(data);
 
-                  setShowMenu(false);
-                });
+                    setShowMenu(false);
+                  });
               },
             };
           });
@@ -134,19 +138,20 @@ export default function Sidebar({
             tempMenu.push({
               title: "Remove assignee",
               onClick: () => {
-                AxiosInstance.request({
-                  url: `/todos/${todo!.id}`,
-                  method: "patch",
-                  data: {
-                    assignee: null,
-                  },
-                }).then(() => setShowMenu(false));
+                axios
+                  .request({
+                    url: `/todos/${todo!.id}`,
+                    method: "patch",
+                    data: {
+                      assignee: null,
+                    },
+                  })
+                  .then(() => setShowMenu(false));
               },
             });
           }
           setMenu(tempMenu);
-        }
-      );
+        });
     }
   }, [setTodo, setTodos, showMenu, todo, todos, user]);
 

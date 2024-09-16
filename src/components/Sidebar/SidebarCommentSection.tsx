@@ -3,11 +3,11 @@ import styled from "styled-components";
 import { CommentDataProps } from "./SidebarProps";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
-import { AxiosInstance } from "../../api";
 import { Comment } from "../../types";
 import { fetchLocalTimefromISO, fetchPathParam } from "../../utils";
 import { AiOutlineSend } from "react-icons/ai";
-import { useAuth } from "../../hooks";
+import { useAppSelector } from "../../hooks";
+import axios from "axios";
 
 interface StyledCommentItemProps {
   selfauthored: boolean;
@@ -61,7 +61,7 @@ const StyledTimeContainer = styled.div`
 export default function SidebarCommentSection({ todo }: CommentDataProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [message, setMessage] = useState("");
-  const { user } = useAuth();
+  const { user } = useAppSelector((state) => state.auth);
 
   const handleRenderCommentItem = useMemo(
     () =>
@@ -82,25 +82,29 @@ export default function SidebarCommentSection({ todo }: CommentDataProps) {
   );
 
   const handleSendComment = () => {
-    AxiosInstance.request({
-      url: "/comments",
-      method: "post",
-      data: {
-        message,
-        todo_id: todo.id,
-      },
-    }).then(({ data }) => {
-      setMessage("");
-      setComments((curr) => [...curr, data]);
-    });
+    axios
+      .request({
+        url: "/comments",
+        method: "post",
+        data: {
+          message,
+          todo_id: todo.id,
+        },
+      })
+      .then(({ data }) => {
+        setMessage("");
+        setComments((curr) => [...curr, data]);
+      });
   };
 
   useEffect(() => {
     async function fetchData() {
-      await AxiosInstance.request({
-        url: fetchPathParam("/comments", todo.id),
-        method: "get",
-      }).then(({ data }) => setComments(data));
+      await axios
+        .request({
+          url: fetchPathParam("/comments", todo.id),
+          method: "get",
+        })
+        .then(({ data }) => setComments(data));
     }
 
     fetchData();

@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import axios from "axios";
 import styled from "styled-components";
 import { SidebarFormProps } from "./SidebarProps";
 import Textarea from "../Textarea";
 import Input from "../Input";
 import Button from "../Button";
-import { AxiosInstance } from "../../api";
 import { Todo } from "../../types";
 import { transformTodos } from "../../utils";
 
@@ -35,13 +35,11 @@ export default function SidebarForm({
     defaultValue?.description || ""
   );
   const handleCreateTodo = () => {
-    AxiosInstance.post<Todo>("/todos", { title, description }).then(
-      ({ data }) => {
-        setTodos((todos) => {
-          return { ...todos, [data.status]: [...todos[data.status], data] };
-        });
-      }
-    );
+    axios.post<Todo>("/todos", { title, description }).then(({ data }) => {
+      setTodos((todos) => {
+        return { ...todos, [data.status]: [...todos[data.status], data] };
+      });
+    });
   };
 
   const handleSaveChangesDisabled = useMemo(() => {
@@ -57,20 +55,22 @@ export default function SidebarForm({
 
   const handleEditTodo = () => {
     if (defaultValue)
-      AxiosInstance.request({
-        url: `/todos/${defaultValue.id}`,
-        method: "patch",
-        data: {
-          title,
-          description,
-        },
-      }).then(({ data }) => {
-        const todos_values = Object.values(todos).flat();
-        const new_todos = todos_values.map((todo) =>
-          todo.id === data.id ? data : todo
-        );
-        setTodos(transformTodos(new_todos));
-      });
+      axios
+        .request({
+          url: `/todos/${defaultValue.id}`,
+          method: "patch",
+          data: {
+            title,
+            description,
+          },
+        })
+        .then(({ data }) => {
+          const todos_values = Object.values(todos).flat();
+          const new_todos = todos_values.map((todo) =>
+            todo.id === data.id ? data : todo
+          );
+          setTodos(transformTodos(new_todos));
+        });
   };
 
   const handleOnlickCreate = () => {

@@ -1,30 +1,54 @@
-import React, { createContext, ReactNode, useEffect, useState } from "react";
-import { AuthContextType, loginBody, registerBody, User } from "../types/Types";
+import React, {
+  createContext,
+  ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
+import {
+  AuthContextType,
+  CustomAxiosRequestConfig,
+  loginBody,
+  registerBody,
+  User,
+  UserResponse,
+} from "../types/Types";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { AxiosInstance } from "../api";
+import axios from "axios";
+import { useAppDispatch, useAppSelector } from "./hooks";
+import {
+  selectAccessToken,
+  selectUser,
+  setAccessToken,
+  setUser,
+} from "../redux/authSlice";
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+const AXIOS_BASE_URL = "http://localhost:3000/api/";
+const GOOGLE_LOGIN_URL = "http://localhost:3000/api/auth/google/login";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
-  const setToken = useState<string | null>(null)[1];
-  const [user, setUser] = useState<User | undefined>();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
+  const token = useAppSelector(selectAccessToken);
 
-  useEffect(() => {
-    const local_user = localStorage.getItem("user");
-    const local_token = localStorage.getItem("access_token");
-    if (local_user && local_token) {
-      setUser(JSON.parse(local_user));
-      setToken(local_token);
-    }
-    setIsAuthenticated(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const AxiosInstance = useMemo(
+    () =>
+      axios.create({
+        baseURL: AXIOS_BASE_URL,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    [token]
+  );
 
   const register = ({ role, name, username, password }: registerBody) => {
-    AxiosInstance.post("/users/register", { role, username, name, password })
+    AxiosInstance.post("/auth/register", { role, username, name, password })
       .then(async () => {
         await login({ username, password });
       })
@@ -37,27 +61,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       method: "post",
       data: { username, password },
     })
-      .then(({ data }) => {
+      .then(({ data }: { data: UserResponse }) => {
         const { token, ...userInfo } = data;
-        localStorage.setItem("access_token", token);
-        localStorage.setItem("user", JSON.stringify(userInfo));
-        setUser(userInfo);
+        dispatch(setAccessToken(token));
+        dispatch(setUser(userInfo));
         navigate("/home");
       })
       .catch(() => {
-        setIsAuthenticated(false);
         toast.warning("Server error occured");
       });
 
-  const googleLogin = () =>
-    (window.location.href = "http://localhost:3000/api/auth/google/login");
+  const googleLogin = () => (window.location.href = GOOGLE_LOGIN_URL);
 
   const logout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("user");
-    setUser(undefined);
-    setToken("");
-    setIsAuthenticated(false);
+    setUser(null);
+    setAccessToken(null);
     navigate("/login");
   };
 
@@ -65,11 +83,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
     if (token) {
-      localStorage.setItem("access_token", token);
+      dispatch(setAccessToken(token));
       if (!user) {
-        AxiosInstance.get("/users/info").then(({ data }) => {
+        AxiosInstance.get("/users/info").then(({ data }: { data: User }) => {
           setUser(data);
-          localStorage.setItem("user", JSON.stringify(data));
+          dispatch(setUser(data));
           navigate("/home");
         });
       }
@@ -78,10 +96,54 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useLayoutEffect(() => {
+    const authInterceptor = axios.interceptors.request.use(
+      (config: CustomAxiosRequestConfig) => {
+        config.baseURL = AXIOS_BASE_URL;
+        config.headers.Authorization =
+          !config._retry && token
+            ? `Bearer ${token}`
+            : config.headers.Authorization;
+        return config;
+      }
+    );
+    return () => {
+      axios.interceptors.request.eject(authInterceptor);
+    };
+  }, [token]);
+
+  useLayoutEffect(() => {
+    const refreshInterceptor = axios.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+
+        if (
+          error.response.status === 401 &&
+          error.response.data.message === "Unauthorized"
+        ) {
+          try {
+            const response = await axios.get("/auth/refreshToken");
+            setAccessToken(response.data.accessToken);
+            originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
+            originalRequest._retry = true;
+
+            return axios(originalRequest);
+          } catch {
+            setAccessToken(null);
+          }
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      axios.interceptors.request.eject(refreshInterceptor);
+    };
+  }, []);
+
   return (
-    <AuthContext.Provider
-      value={{ user, isAuthenticated, googleLogin, login, logout, register }}
-    >
+    <AuthContext.Provider value={{ googleLogin, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

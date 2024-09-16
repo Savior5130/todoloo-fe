@@ -1,9 +1,10 @@
+import { InternalAxiosRequestConfig } from "axios";
+
 export type TodoStatus = "TODO" | "IN_PROGRESS" | "DONE";
 
 export type TodoState = {
   [status in TodoStatus]: Todo[];
 };
-
 
 export type Todo = {
   id: number;
@@ -31,6 +32,14 @@ export type User = {
   role: UserRole;
 };
 
+export interface UserResponse {
+  id: string;
+  username: string;
+  name: string;
+  role: UserRole;
+  token: string;
+}
+
 export interface loginBody {
   username?: string;
   password?: string;
@@ -44,8 +53,6 @@ export interface registerBody {
 }
 
 export interface AuthContextType {
-  isAuthenticated: boolean;
-  user?: User;
   googleLogin: () => void;
   login: (body: loginBody) => void;
   logout: () => void;
@@ -86,3 +93,7 @@ export type HeadingGroup =
   | "Heading 6"
   | "Heading 7"
   | "Heading 8";
+
+export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
