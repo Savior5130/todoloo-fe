@@ -4,7 +4,15 @@ import {
   configureStore,
   ThunkAction,
 } from "@reduxjs/toolkit";
-import { persistReducer } from "redux-persist";
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  persistReducer,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from "redux-persist";
 import authReducer from "./authSlice";
 import storage from "redux-persist/lib/storage";
 
@@ -22,7 +30,13 @@ const reducer = combineReducers({
 const persistedReducer = persistReducer(persistConfig, reducer);
 
 const store = configureStore({
-  reducer,
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 export type AppStore = typeof store;
