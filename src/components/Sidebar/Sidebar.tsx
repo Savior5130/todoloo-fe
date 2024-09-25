@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { AiOutlineClose, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
-import axios from "axios";
 import styled, { useTheme } from "styled-components";
 import { SidebarProps } from "./SidebarProps";
 import SidebarCommentSection from "./SidebarCommentSection";
@@ -11,6 +10,7 @@ import { useAppSelector } from "../../hooks";
 import { User } from "../../types";
 import { transformTodos } from "../../utils";
 import { selectUser } from "../../redux/authSlice";
+import { api } from "../../services";
 
 const StyledSidebar = styled.div`
   padding: 0.5rem;
@@ -104,7 +104,7 @@ export default function Sidebar({
 
   useEffect(() => {
     if (showMenu) {
-      axios
+      api
         .get(user!.role === "user" ? "users/common" : "users")
         .then(({ data }) => {
           const tempMenu: menuItem[] = data.map((datum: User) => {
@@ -113,7 +113,7 @@ export default function Sidebar({
               children: <StyledAvatar />,
               metadata: datum,
               onClick: () => {
-                axios
+                api
                   .request({
                     url: `/todos/${todo!.id}`,
                     method: "patch",
@@ -138,7 +138,7 @@ export default function Sidebar({
             tempMenu.push({
               title: "Remove assignee",
               onClick: () => {
-                axios
+                api
                   .request({
                     url: `/todos/${todo!.id}`,
                     method: "patch",

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import axios from "axios";
 import styled from "styled-components";
 import Navbar, {
   Button,
@@ -10,6 +9,7 @@ import Navbar, {
 } from "../components";
 import { Todo, TodoState, TodoStatus } from "../types";
 import { transformTodos } from "../utils";
+import { api } from "../services";
 
 const StyledContainer = styled.div`
   background-color: ${({ theme }) => theme.background_3};
@@ -165,7 +165,7 @@ export default function HomeScreen() {
     target.classList.remove("dropzone");
 
     if (todo_status !== target_status)
-      axios
+      api
         .request<Todo>({
           url: `/todos/${todo_id}`,
           method: "patch",
@@ -232,7 +232,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await axios.request({ url: "/todos", method: "GET" }).then(({ data }) => {
+      await api.request({ url: "/todos", method: "GET" }).then(({ data }) => {
         setTodos(transformTodos(data));
       });
     };

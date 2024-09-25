@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import axios from "axios";
 import styled from "styled-components";
 import { SidebarFormProps } from "./SidebarProps";
 import Textarea from "../Textarea";
@@ -8,6 +7,7 @@ import Input from "../Input";
 import Button from "../Button";
 import { Todo } from "../../types";
 import { transformTodos } from "../../utils";
+import { api } from "../../services";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -35,11 +35,13 @@ export default function SidebarForm({
     defaultValue?.description || ""
   );
   const handleCreateTodo = () => {
-    axios.post<Todo>("/todos", { title, description }).then(({ data }) => {
-      setTodos((todos) => {
-        return { ...todos, [data.status]: [...todos[data.status], data] };
+    api
+      .post<Todo>("/todos", { title, description }, { withCredentials: true })
+      .then(({ data }) => {
+        setTodos((todos) => {
+          return { ...todos, [data.status]: [...todos[data.status], data] };
+        });
       });
-    });
   };
 
   const handleSaveChangesDisabled = useMemo(() => {
@@ -55,7 +57,7 @@ export default function SidebarForm({
 
   const handleEditTodo = () => {
     if (defaultValue)
-      axios
+      api
         .request({
           url: `/todos/${defaultValue.id}`,
           method: "patch",

@@ -9,7 +9,7 @@ import "./App.css";
 import { HomeScreen, LoginScreen, RegisterScreen } from "./screens";
 import store from "./redux/store";
 import { lightTheme } from "./styles/theme";
-import { AuthProvider } from "./hooks/useAuth";
+import { AuthProvider } from "./hooks/authContext";
 
 const App = () => {
   const persistor = persistStore(store);

@@ -4,8 +4,8 @@ import styled from "styled-components";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
 import { AuthModalProps } from "./AuthModalProps";
-import { useAuth } from "../../hooks";
 import GoogleButton from "react-google-button";
+import { useAuth } from "../../hooks";
 
 const StyledDialog = styled.dialog`
   min-width: 25rem;

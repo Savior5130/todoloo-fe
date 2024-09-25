@@ -114,7 +114,7 @@ export default function Navbar({ onSearch, onAddTask }: NavbarProps) {
         </StyledButton>
         <StyledAvatar />
         <StyledIconContainer
-          showmenu={menu}
+          showmenu={menu ? true : false}
           onClick={() => setMenu((menu) => !menu)}
         >
           <StyledIcon size={14} color={theme.text_muted} />

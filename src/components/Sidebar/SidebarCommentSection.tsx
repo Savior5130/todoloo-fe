@@ -7,7 +7,7 @@ import { Comment } from "../../types";
 import { fetchLocalTimefromISO, fetchPathParam } from "../../utils";
 import { AiOutlineSend } from "react-icons/ai";
 import { useAppSelector } from "../../hooks";
-import axios from "axios";
+import { api } from "../../services";
 
 interface StyledCommentItemProps {
   selfauthored: boolean;
@@ -82,7 +82,7 @@ export default function SidebarCommentSection({ todo }: CommentDataProps) {
   );
 
   const handleSendComment = () => {
-    axios
+    api
       .request({
         url: "/comments",
         method: "post",
@@ -99,7 +99,7 @@ export default function SidebarCommentSection({ todo }: CommentDataProps) {
 
   useEffect(() => {
     async function fetchData() {
-      await axios
+      await api
         .request({
           url: fetchPathParam("/comments", todo.id),
           method: "get",
