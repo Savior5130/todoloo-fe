@@ -8,6 +8,7 @@ import { fetchLocalTimefromISO, fetchPathParam } from "../../utils";
 import { AiOutlineSend } from "react-icons/ai";
 import { useAppSelector } from "../../hooks";
 import { api } from "../../services";
+import { toast } from "react-toastify";
 
 interface StyledCommentItemProps {
   selfauthored: boolean;
@@ -94,6 +95,7 @@ export default function SidebarCommentSection({ todo }: CommentDataProps) {
       .then(({ data }) => {
         setMessage("");
         setComments((curr) => [...curr, data]);
+        toast.success("Comment sent successfully");
       });
   };
 

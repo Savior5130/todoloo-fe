@@ -8,6 +8,7 @@ import Button from "../Button";
 import { Todo } from "../../types";
 import { transformTodos } from "../../utils";
 import { api } from "../../services";
+import { toast } from "react-toastify";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -38,6 +39,7 @@ export default function SidebarForm({
     api
       .post<Todo>("/todos", { title, description }, { withCredentials: true })
       .then(({ data }) => {
+        toast.success("Task created successfully");
         setTodos((todos) => {
           return { ...todos, [data.status]: [...todos[data.status], data] };
         });

@@ -40,6 +40,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         dispatch(setAccessToken(token));
         dispatch(setUser(userInfo));
         navigate("/home");
+        toast.success("Login successfully");
+
       })
       .catch(() => {
         toast.error("Login failed. Please check your credentials.");

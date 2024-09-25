@@ -11,6 +11,7 @@ import { User } from "../../types";
 import { transformTodos } from "../../utils";
 import { selectUser } from "../../redux/authSlice";
 import { api } from "../../services";
+import { toast } from "react-toastify";
 
 const StyledSidebar = styled.div`
   padding: 0.5rem;
@@ -128,6 +129,9 @@ export default function Sidebar({
                     );
                     setTodos(transformTodos(new_todos));
                     setTodo(data);
+                    toast.success(
+                      `Task assigned to ${datum.name} successfully`
+                    );
 
                     setShowMenu(false);
                   });
@@ -146,7 +150,10 @@ export default function Sidebar({
                       assignee: null,
                     },
                   })
-                  .then(() => setShowMenu(false));
+                  .then(() => {
+                    setShowMenu(false);
+                    toast.success("Assignee removed successfully");
+                  });
               },
             });
           }

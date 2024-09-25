@@ -10,6 +10,7 @@ import Navbar, {
 import { Todo, TodoState, TodoStatus } from "../types";
 import { transformTodos } from "../utils";
 import { api } from "../services";
+import { toast } from "react-toastify";
 
 const StyledContainer = styled.div`
   background-color: ${({ theme }) => theme.background_3};
@@ -178,6 +179,7 @@ export default function HomeScreen() {
           const newTodos = todo_values.map((todo) =>
             todo.id === data.id ? data : todo
           );
+          toast.success(`Status changed to ${target_status}`);
           setTodos(transformTodos(newTodos));
         });
   };
