@@ -10,13 +10,15 @@ This is a self-made React-based Todo-list app where user can create and assign t
 
 ## <a name="features">🔋 Features</a>
 
+🤩 **Assign and Comment Capability**: Assign and comment on task they created/were assigned with.
+
 🤩 **Optimistic UI**: User can see actions taking impact on the interface immediately.
 
 🤩 **Search Capability**: User can search through the list of task they have created.
 
-🤩 **Drag-Drop Functionality**: User can easily update status of the task by drag-dropping corresponding card.
+🤩 **Redux Persist**: Application retains user information even after refresh.
 
-🤩 **Assign and Comment Capability**: Assign and comment on task they created/assigned to.
+🤩 **Drag-Drop Functionality**: User can easily update status of the task by drag-dropping corresponding card.
 
 🤩 **Responsiveness**: Smooth performance and adaptability across various devices and screen sizes for a consistent user experience.
 
