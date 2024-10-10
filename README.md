@@ -1,50 +1,48 @@
-# React + TypeScript + Vite
+## 🚨 Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a self-made React-based Todo-list app where user can create and assign task on one another's task.
 
-Currently, two official plugins are available:
+## <a name="tech-stack">⚙️ Tech Stack</a>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React
+- Typescript
+- Redux
 
-## Expanding the ESLint configuration
+## <a name="features">🔋 Features</a>
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+🤩 **Optimistic UI**: User can see actions taking impact on the interface immediately.
 
-- Configure the top-level `parserOptions` property like this:
+🤩 **Search Capability**: User can search through the list of task they have created.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+🤩 **Drag-Drop Functionality**: User can easily update status of the task by drag-dropping corresponding card.
+
+🤩 **Assign and Comment Capability**: Assign and comment on task they created/assigned to.
+
+🤩 **Responsiveness**: Smooth performance and adaptability across various devices and screen sizes for a consistent user experience.
+
+
+## <a name="quick-start">🤸 Quick Start</a>
+
+Follow these steps to set up the project locally on your machine.
+
+**Prerequisites**
+
+Make sure you have the following installed on your machine:
+
+- [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/en)
+- [npm](https://www.npmjs.com/) (Node Package Manager)
+
+**Installation**
+
+Install the project dependencies using npm:
+
+```bash
+npm install
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+**Running the Project**
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+npm start
 ```
